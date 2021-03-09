@@ -11,14 +11,14 @@ import (
 )
 
 
-func GetUser(ID string) (models.User, error) {
+func GetUser(ID string) (models.ReturnUser, error) {
  
     ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
     defer cancel()
     db := MongoCN.Database("feedback-api")
     col := db.Collection("users")
  
-    var user models.User
+    var user models.ReturnUser
     objID, _ := primitive.ObjectIDFromHex(ID)
  
     condicion := bson.M{

@@ -25,7 +25,6 @@ func GetUser(ID string) (models.ReturnUser, error) {
         "_id": objID,
     }
     err := col.FindOne(ctx, condicion).Decode(&user)
-    user.Password = ""
     if err != nil {
         fmt.Println("User not found " + err.Error())
         return user, err

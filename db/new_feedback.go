@@ -8,8 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-//InsertoFeedback es
-func InsertoFeedback(u models.Feedback) (string, bool, error) {
+//AddFeedback is used to store feedbacks into the db.
+func AddFeedback(u models.Feedback) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 

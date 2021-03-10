@@ -8,9 +8,9 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-//GeneroJWT genera un jwt para loguear.
-func GeneroJWT(usu models.User) (string, error) {
-	miClave := []byte(os.Getenv("JWT_KEY"))
+//GenerateJWT is used to generate a new token
+func GenerateJWT(usu models.User) (string, error) {
+	key := []byte(os.Getenv("JWT_KEY"))
 
 	payload := jwt.MapClaims{
 		"email":    usu.Email,
@@ -20,7 +20,7 @@ func GeneroJWT(usu models.User) (string, error) {
 		"exp":      time.Now().Add(time.Hour * 24).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
-	tokenStr, err := token.SignedString(miClave)
+	tokenStr, err := token.SignedString(key)
 	if err != nil {
 		return tokenStr, err
 	}

@@ -8,24 +8,20 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-/*ChequeoYaExisteUsuario recibe un email de parámetro y chequea si ya está en la BD*/
-func ChequeoYaExisteUsuario(email string) (models.User, bool, string) {
+//UserAlreadyExist checks if the user is inside the db.
+func UserAlreadyExist(email string) (models.User, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	db := MongoCN.Database("feedback-db")
 	col := db.Collection("users")
 
-	// M es una función que formatea o mapea a bson lo que recibe como json
-	condicion := bson.M{"email": email}
+	condition := bson.M{"email": email} // email filter
+	var result models.User
 
-	// en la variable resultado voy a modelar un usuario
-	var resultado models.User
-
-	//FindOne me devuelve un sólo registro que cumple con la condición
-	err := col.FindOne(ctx, condicion).Decode(&resultado)
-	ID := resultado.ID.Hex()
+	err := col.FindOne(ctx, condition).Decode(&result) // if it exists it will be passed to result
+	ID := result.ID.Hex()
 	if err != nil {
-		return resultado, false, ID
+		return result, false, ID
 	}
-	return resultado, true, ID
+	return result, true, ID
 }

@@ -16,9 +16,10 @@ func SetRoutes() {
 	router := mux.NewRouter()
 
 	//Endpoints ------------------------------------------------------------------------------------
-	router.HandleFunc("/registro", middleware.ChequeoBD(routers.SignUp)).Methods("POST")
-	router.HandleFunc("/login", middleware.ChequeoBD(routers.Login)).Methods("POST")
-	router.HandleFunc("/feedback", middleware.ChequeoBD(middleware.ValidoJWT(routers.FeedbackTry))).Methods("POST")
+	router.HandleFunc("/sign_up", middleware.CheckDb(routers.SignUp)).Methods("POST")
+	router.HandleFunc("/login", middleware.CheckDb(routers.Login)).Methods("POST")
+	router.HandleFunc("/feedback", middleware.CheckDb(middleware.ValidateJWT(routers.FeedbackTry))).Methods("POST")
+	router.HandleFunc("/setProfilePic", middleware.CheckDb(middleware.ValidateJWT(routers.SetProfilePicture))).Methods("POST")
 	//-----------------------------------------------------------------------------------------------
 
 	PORT := os.Getenv("PORT")

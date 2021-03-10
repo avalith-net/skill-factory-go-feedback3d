@@ -7,7 +7,6 @@ import (
 	"crypto/md5"
 	"crypto/rand"
 	"encoding/hex"
-	"fmt"
 	"io"
 )
 
@@ -21,7 +20,6 @@ func PassEncrypt(pass string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("Pasword encriptada antes de guardar el registro: %s", string(ciphertext))
 	return string(ciphertext), nil
 }
 
@@ -31,7 +29,6 @@ func DecryptPassword(encryptedPass string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("Password desencriptada: %s", string(plaintext))
 	return string(plaintext), nil
 }
 
@@ -39,8 +36,6 @@ func DecryptPassword(encryptedPass string) (string, error) {
 if they match returns true and nil, if there's an error decrypting returns false and the error, and if they not match, returns false and nil*/
 func ComparePasswords(passNotEncrypted, passEncrypted []byte) (bool, error) {
 	pass, err := decrypt(passEncrypted, key)
-
-	fmt.Println("PassInDB: ", string(pass), "PassReceived: ", string(passNotEncrypted))
 
 	if err != nil {
 		return false, err

@@ -1,15 +1,8 @@
 package models
 
-import (
-	"time"
-)
-
-//Feedback structure
-type Feedback struct {
-	IssuerID   string    `bson:"issuer_id,omitempty" json:"issuer_id" deepcopier:"skip"`
-	ReceiverID string    `bson:"receiver_id,omitempty" json:"receiver_id" deepcopier:"skip"`
-	Date       time.Time `bson:"date" json:"date,omitempty" deepcopier:"skip"`
-	TechArea   struct {
+//FeedbackRaw structure
+type FeedbackRaw struct {
+	TechArea struct {
 		Message       string `bson:"tamessage,omitempty" json:"tamessage"`
 		TechKnowledge string `bson:"techKnowledge,omitempty" json:"techknowledge"`
 		BestPractices string `bson:"bestPractices,omitempty" json:"bestpractices"`

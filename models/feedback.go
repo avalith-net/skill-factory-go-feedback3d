@@ -26,7 +26,5 @@ type Feedback struct {
 		WorkQuality    string `bson:"workQuality,omitempty" json:"workquality"`
 		ClientOriented string `bson:"clientOriented,omitempty" json:"clientoriented"`
 	}
-	Message struct {
-		Description string `bson:"message,omitempty" json:"message"`
-	}
+	Message string `bson:"message,omitempty" json:"message"`
 }

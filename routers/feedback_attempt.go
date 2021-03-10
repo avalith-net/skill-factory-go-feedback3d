@@ -2,6 +2,7 @@ package routers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -24,10 +25,17 @@ func FeedbackTry(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&fbRaw)
 
 	//-------Feedback validation------
-	if structs.IsZero(fbRaw) ||
-		(structs.IsZero(fbRaw.PerformanceArea) && structs.IsZero(fbRaw.TeamArea) && structs.IsZero(fbRaw.TechArea)) ||
-		(structs.HasZero(fbRaw.PerformanceArea) && structs.HasZero(fbRaw.TeamArea) && structs.HasZero(fbRaw.TechArea)) {
+	if structs.IsZero(fbRaw) || !hasZeroGroup(fbRaw.PerformanceArea, fbRaw.TeamArea, fbRaw.TechArea) {
 		http.Error(w, "You must enter at least one complete area", 400)
+		return
+	}
+
+	if !validateMsgLength(1500, fbRaw.Message) {
+		http.Error(w, "Message cannot be longer than 1500 characters.", 400)
+		return
+	}
+	if !validateMsgLength(500, fbRaw.TechArea.Message, fbRaw.TeamArea.Message, fbRaw.PerformanceArea.Message) {
+		http.Error(w, "Area Messages cannot be longer than 500 characters.", 400)
 		return
 	}
 	//-----------------------------------
@@ -51,4 +59,28 @@ func FeedbackTry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+}
+
+func validateMsgLength(maxLen int, Amsg ...string) bool {
+	for _, msg := range Amsg {
+		if len(msg) > maxLen {
+			return false
+		}
+	}
+	return true
+}
+
+func hasZeroGroup(gr ...interface{}) bool {
+	count := 0
+	for _, field := range gr {
+		fmt.Println(count, len(gr))
+		if structs.HasZero(field) {
+			count++
+		}
+	}
+	fmt.Println(count, len(gr))
+	if count == len(gr) {
+		return false
+	}
+	return true
 }

@@ -8,37 +8,37 @@ import (
 	"github.com/blotin1993/feedback-api/models"
 )
 
-//SignUp ..
+//SignUp is used to register to the app
 func SignUp(w http.ResponseWriter, r *http.Request) {
 
 	var t models.User
 	err := json.NewDecoder(r.Body).Decode(&t)
 	if err != nil {
-		http.Error(w, "Error en los datos recibidos: "+err.Error(), 400)
+		http.Error(w, "Error checking the data: "+err.Error(), 400)
 		return
 	}
-	/*Si no hubo error con el Body hago unas validaciones*/
+
+	//data validation
 	if len(t.Email) == 0 {
-		http.Error(w, "El email de usuario es requerido ", 400)
+		http.Error(w, "must add email ", 400)
 		return
 	}
 	if len(t.Password) < 6 {
-		http.Error(w, "Debe especificar una contraseña de al menos seis caracteres", 400)
+		http.Error(w, "Your password must be at least 6 characters long", 400)
 		return
 	}
-	_, encontrado, _ := db.ChequeoYaExisteUsuario(t.Email)
+	_, encontrado, _ := db.UserAlreadyExist(t.Email)
 	if encontrado == true {
-		http.Error(w, "Ya existe un usuario registrado con ese Email", 400)
+		http.Error(w, "Email already registered.", 400)
 		return
 	}
-	_, status, err := db.InsertoRegistro(t)
+	_, status, err := db.AddRegister(t)
 	if err != nil {
-		http.Error(w, "Ocurrió un error al intentar realizar el registro de usuario"+err.Error(), 400)
+		http.Error(w, "Database error "+err.Error(), 400)
 		return
 	}
-	/*Si llegó hasta acá todo anduvo bien*/
 	if status == false {
-		http.Error(w, "No se ha logrado insertar el registro del usuario", 400)
+		http.Error(w, "Error, Register not added.", 400)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)

@@ -34,7 +34,8 @@ func FeedbackTry(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Message cannot be longer than 1500 characters.", 400)
 		return
 	}
-	if !validateMsgLength(500, fbRaw.TechArea.Message, fbRaw.TeamArea.Message, fbRaw.PerformanceArea.Message) {
+	fmt.Println(len(fbRaw.TechArea.Message), len(fbRaw.TeamArea.Message), len(fbRaw.PerformanceArea.Message), fbRaw.TechArea.Message, fbRaw.TeamArea.Message, fbRaw.PerformanceArea.Message)
+	if !validateMsgLength(536, fbRaw.TechArea.Message, fbRaw.TeamArea.Message, fbRaw.PerformanceArea.Message) { //36 porque toma 12 más por salto de página (en este caso serían 3, checkear.)
 		http.Error(w, "Area Messages cannot be longer than 500 characters.", 400)
 		return
 	}

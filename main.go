@@ -11,11 +11,6 @@ import (
 
 func main() {
 
-	/*pass, _ := db.PassEncrypt("nofede")
-	fmt.Println(pass)
-	dpass, _ := db.DecryptPassword(pass)
-	fmt.Println(dpass)*/
-
 	if db.CheckConnection() == 0 {
 
 		log.Fatal("No connection to the BD")

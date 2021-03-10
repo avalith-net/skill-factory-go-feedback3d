@@ -15,7 +15,8 @@ func AddRegister(u models.User) (string, bool, error) {
 
 	db := MongoCN.Database("feedback-db")
 	col := db.Collection("users")
-	u.Password, _ = PassEncrypt(u.Password)
+	var err error
+	u.Password, err = PassEncrypt(u.Password)
 	result, err := col.InsertOne(ctx, u)
 	if err != nil {
 		return "", false, err

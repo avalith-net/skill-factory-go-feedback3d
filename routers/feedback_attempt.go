@@ -2,7 +2,6 @@ package routers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -30,12 +29,11 @@ func FeedbackTry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !validateMsgLength(1500, fbRaw.Message) {
+	if !validateMsgLength(1614, fbRaw.Message) {
 		http.Error(w, "Message cannot be longer than 1500 characters.", 400)
 		return
 	}
-	fmt.Println(len(fbRaw.TechArea.Message), len(fbRaw.TeamArea.Message), len(fbRaw.PerformanceArea.Message), fbRaw.TechArea.Message, fbRaw.TeamArea.Message, fbRaw.PerformanceArea.Message)
-	if !validateMsgLength(536, fbRaw.TechArea.Message, fbRaw.TeamArea.Message, fbRaw.PerformanceArea.Message) { //36 porque toma 12 más por salto de página (en este caso serían 3, checkear.)
+	if !validateMsgLength(536, fbRaw.TechArea.Message, fbRaw.TeamArea.Message, fbRaw.PerformanceArea.Message) { //36 porque toma 12 más por salto de página (en este caso serían 3, checkear. No estoy seguro si es solo en postman)
 		http.Error(w, "Area Messages cannot be longer than 500 characters.", 400)
 		return
 	}
@@ -74,12 +72,10 @@ func validateMsgLength(maxLen int, Amsg ...string) bool {
 func hasZeroGroup(gr ...interface{}) bool {
 	count := 0
 	for _, field := range gr {
-		fmt.Println(count, len(gr))
 		if structs.HasZero(field) {
 			count++
 		}
 	}
-	fmt.Println(count, len(gr))
 	if count == len(gr) {
 		return false
 	}

@@ -1,6 +1,6 @@
 package models
 
-//Metrics .. TODO
+//Metrics ..
 var Metrics = map[int]string{
 	1: "Let´s work on this.",
 	2: "Reach the Goal.",

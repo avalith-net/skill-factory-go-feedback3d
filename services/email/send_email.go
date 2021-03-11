@@ -5,7 +5,9 @@ import (
 )
 
 //SendEmail is used to send emails
-func SendEmail(msg *gomail.Message, email, subject string) bool {
+func SendEmail(email, subject, body string) bool {
+	msg := gomail.NewMessage()
+	msg.SetBody("text/html", body)
 
 	msg.SetHeader("From", "vlotingaming@gmail.com")
 	msg.SetHeader("To", email)

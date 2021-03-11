@@ -1,4 +1,4 @@
-package jwt
+package services
 
 import (
 	"os"
@@ -9,7 +9,7 @@ import (
 )
 
 //GenerateJWT is used to generate a new token
-func GenerateJWT(usu models.User) (string, error) {
+func GenerateJWT(usu models.User, exp time.Time) (string, error) {
 	key := []byte(os.Getenv("JWT_KEY"))
 
 	payload := jwt.MapClaims{
@@ -17,7 +17,7 @@ func GenerateJWT(usu models.User) (string, error) {
 		"name":     usu.Name,
 		"lastname": usu.LastName,
 		"_id":      usu.ID.Hex(),
-		"exp":      time.Now().Add(time.Hour * 730).Unix(), //SET TO 24.
+		"exp":      exp.Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
 	tokenStr, err := token.SignedString(key)

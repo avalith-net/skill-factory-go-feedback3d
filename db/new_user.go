@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/blotin1993/feedback-api/models"
-	services "github.com/blotin1993/feedback-api/services/validation"
+	services "github.com/blotin1993/feedback-api/services/auth"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

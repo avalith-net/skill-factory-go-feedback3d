@@ -7,7 +7,6 @@ import (
 
 	"github.com/blotin1993/feedback-api/db"
 	"github.com/blotin1993/feedback-api/models"
-	"github.com/ulule/deepcopier"
 
 	"github.com/fatih/structs"
 )
@@ -19,28 +18,27 @@ func FeedbackTry(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "ID Error", http.StatusBadRequest)
 		return
 	}
-	var fbRaw models.FeedbackRaw
+	var fb models.Feedback
 
-	err := json.NewDecoder(r.Body).Decode(&fbRaw)
+	err := json.NewDecoder(r.Body).Decode(&fb)
 
 	//-------Feedback validation------
-	if structs.IsZero(fbRaw) || !hasZeroGroup(fbRaw.PerformanceArea, fbRaw.TeamArea, fbRaw.TechArea) {
+	if structs.IsZero(fb) || !hasZeroGroup(fb.PerformanceArea, fb.TeamArea, fb.TechArea) {
 		http.Error(w, "You must enter at least one complete area", 400)
 		return
 	}
 
-	if !validateMsgLength(1614, fbRaw.Message) {
+	if !validateMsgLength(1614, fb.Message) {
 		http.Error(w, "Message cannot be longer than 1500 characters.", 400)
 		return
 	}
-	if !validateMsgLength(536, fbRaw.TechArea.Message, fbRaw.TeamArea.Message, fbRaw.PerformanceArea.Message) { //36 porque toma 12 más por salto de página (en este caso serían 3, checkear. No estoy seguro si es solo en postman)
+	if !validateMsgLength(536, fb.TechArea.Message, fb.TeamArea.Message, fb.PerformanceArea.Message) { //36 porque toma 12 más por salto de página (en este caso serían 3, checkear. No estoy seguro si es solo en postman)
 		http.Error(w, "Area Messages cannot be longer than 500 characters.", 400)
 		return
 	}
 	//-----------------------------------
 
 	fbProcessed := &models.Feedback{}
-	deepcopier.Copy(fbRaw).To(fbProcessed)
 
 	fbProcessed.IssuerID = IDUser
 	fbProcessed.ReceiverID = rID

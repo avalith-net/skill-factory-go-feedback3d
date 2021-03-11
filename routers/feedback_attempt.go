@@ -48,7 +48,6 @@ func FeedbackTry(w http.ResponseWriter, r *http.Request) {
 
 	_, status, err := db.AddFeedback(*fbProcessed)
 
-	//si hay un error
 	if err != nil {
 		http.Error(w, "An error has ocurred. Try again later "+err.Error(), 400)
 		return

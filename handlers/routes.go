@@ -20,8 +20,9 @@ func SetRoutes() {
 	router.HandleFunc("/login", middleware.CheckDb(routers.Login)).Methods("POST")
 	router.HandleFunc("/feedback", middleware.CheckDb(middleware.ValidateJWT(routers.FeedbackTry))).Methods("POST")
 	router.HandleFunc("/setProfilePic", middleware.CheckDb(middleware.ValidateJWT(routers.SetProfilePicture))).Methods("POST")
-	router.HandleFunc("/getMyPassword", middleware.CheckDb(middleware.ValidateJWT(routers.GetMyPassword))).Methods("POST")
+	router.HandleFunc("/recoverPass", middleware.CheckDb(middleware.ValidateJWT(routers.RecoverPass))).Methods("POST")
 	router.HandleFunc("/getfb", middleware.CheckDb(middleware.ValidateJWT(routers.GetFeed))).Methods("GET")
+	router.HandleFunc("/changePassword", middleware.CheckDb(routers.ChangePassEmail)).Methods("POST")
 
 	//-----------------------------------------------------------------------------------------------
 

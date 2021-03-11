@@ -13,8 +13,6 @@ import (
 //Login validation
 func Login(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Add("Content-Type", "application/json")
-
 	var usu models.User
 	err := json.NewDecoder(r.Body).Decode(&usu)
 	if err != nil {
@@ -31,8 +29,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Wrong user or password.", 400)
 		return
 	}
-
-	jwtKey, err := jwt.GenerateJWT(document)
+	expirationTime := time.Now().Add(24 * time.Hour)
+	jwtKey, err := jwt.GenerateJWT(document, expirationTime)
 	if err != nil {
 		http.Error(w, "Error generating the token "+err.Error(), 400)
 		return
@@ -46,8 +44,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(resp)
 
-	//cookie set for 24 hours
-	expirationTime := time.Now().Add(24 * time.Hour)
+	//cookie set for expirationTime var time
 	http.SetCookie(w, &http.Cookie{
 		Name:    "token",
 		Value:   jwtKey,

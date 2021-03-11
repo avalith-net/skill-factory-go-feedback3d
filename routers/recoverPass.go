@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/blotin1993/feedback-api/db"
+	jwt "github.com/blotin1993/feedback-api/services/auth"
 	services "github.com/blotin1993/feedback-api/services/email"
-	jwt "github.com/blotin1993/feedback-api/services/validation"
 )
 
 //RecoverPass - receive the user data from DataBase and send an Email with his current password

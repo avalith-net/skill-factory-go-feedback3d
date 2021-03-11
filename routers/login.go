@@ -7,7 +7,7 @@ import (
 
 	"github.com/blotin1993/feedback-api/db"
 	"github.com/blotin1993/feedback-api/models"
-	jwt "github.com/blotin1993/feedback-api/services/validation"
+	jwt "github.com/blotin1993/feedback-api/services/auth"
 )
 
 //Login validation

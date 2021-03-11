@@ -2,7 +2,7 @@ package db
 
 import (
 	"github.com/blotin1993/feedback-api/models"
-	services "github.com/blotin1993/feedback-api/services/validation"
+	services "github.com/blotin1993/feedback-api/services/auth"
 )
 
 //LoginAttempt checks if the user already exists and verifies the password.

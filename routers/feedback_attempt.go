@@ -28,11 +28,11 @@ func FeedbackTry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !validateMsgLength(1614, fb.Message) {
+	if !validateMsgLength(1615, fb.Message) { //1615 xq toma saltos de pagina como caracteres.
 		http.Error(w, "Message cannot be longer than 1500 characters.", 400)
 		return
 	}
-	if !validateMsgLength(536, fb.TechArea.Message, fb.TeamArea.Message, fb.PerformanceArea.Message) { //36 porque toma 12 más por salto de página (en este caso serían 3, checkear. No estoy seguro si es solo en postman)
+	if !validateMsgLength(540, fb.TechArea.Message, fb.TeamArea.Message, fb.PerformanceArea.Message) { //40 xq toma saltos de página
 		http.Error(w, "Area Messages cannot be longer than 500 characters.", 400)
 		return
 	}

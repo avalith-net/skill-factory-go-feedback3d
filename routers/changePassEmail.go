@@ -13,7 +13,10 @@ func ChangePassEmail(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	token := r.URL.Query().Get("token")
 	newPass := r.URL.Query().Get("newpass")
-
+	if len(newPass) < 6 {
+		http.Error(w, "The new password must be at least 6 characters long", 400)
+		return
+	}
 	user := models.User{
 		Password: newPass,
 	}

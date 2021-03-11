@@ -38,13 +38,11 @@ func FeedbackTry(w http.ResponseWriter, r *http.Request) {
 	}
 	//-----------------------------------
 
-	fbProcessed := &models.Feedback{}
+	fb.IssuerID = IDUser
+	fb.ReceiverID = rID
+	fb.Date = time.Now()
 
-	fbProcessed.IssuerID = IDUser
-	fbProcessed.ReceiverID = rID
-	fbProcessed.Date = time.Now()
-
-	_, status, err := db.AddFeedback(*fbProcessed)
+	_, status, err := db.AddFeedback(fb)
 
 	if err != nil {
 		http.Error(w, "An error has ocurred. Try again later "+err.Error(), 400)

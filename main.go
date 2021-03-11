@@ -12,6 +12,7 @@ import (
 func main() {
 
 	if db.CheckConnection() == 0 {
+
 		log.Fatal("No connection to the BD")
 		return
 	}

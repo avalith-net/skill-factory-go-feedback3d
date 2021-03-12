@@ -1,11 +1,11 @@
-package routers
+package controller
 
 import (
 	"net/http"
 	"time"
 
+	"github.com/blotin1993/feedback-api/auth"
 	"github.com/blotin1993/feedback-api/db"
-	jwt "github.com/blotin1993/feedback-api/services/auth"
 	services "github.com/blotin1993/feedback-api/services/email"
 	"github.com/gin-gonic/gin"
 )
@@ -25,7 +25,7 @@ func RecoverPass(c *gin.Context) {
 
 	stringObjectID := (user.ID).Hex()
 	expirationTime := time.Now().Add(1 * time.Hour)
-	jwtKey, err := jwt.GenerateJWT(user, expirationTime)
+	jwtKey, err := auth.GenerateJWT(user, expirationTime)
 
 	bodyString := "Hey <b><i>" + user.Name + "</i></b>!\nFollow this link to recover your password.\n <a>http:localhost/8080/changePassword?id=" + stringObjectID + "&token=Bearer " + jwtKey + "</a>"
 

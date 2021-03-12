@@ -12,7 +12,20 @@ import (
 	"github.com/fatih/structs"
 )
 
-//FeedbackTry is used to process our feedbacks
+// FeedbackTry godoc
+// @Description get string by id, token and newpass
+// @id changepass
+// @Summary is used to handle the mail you get when recovering your password.
+// @Param id query string true "Account ID"
+// @Param token query string true "JWT Token"
+// @Param newpass query string true "New Pass"
+// @Produce plain
+// @Success 201 {string} string "Password has been changed."
+// @Header 201 {string} string "Status created"
+// @Failure 400 {string} string "Validation error"
+// @Failure 500 {string} string "An error has ocurred trying to set a new password."
+// @Failure default {string} string "An error has ocurred"
+// @Router /changePassword [post]
 func FeedbackTry(c *gin.Context) {
 	rID := c.Query("target_id")
 	if len(rID) < 1 {

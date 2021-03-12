@@ -15,7 +15,7 @@ func ChangePassEmail(c *gin.Context) {
 	token := c.Query("token")
 	newPass := c.Query("newpass")
 	if len(newPass) < 6 {
-		c.AbortWithStatusJSON(400, gin.H{"message": "The new password must be at least 6 characters long"})
+		c.String(http.StatusBadRequest, "The new password must be at least 6 characters long.")
 		return
 	}
 	user := models.User{
@@ -23,15 +23,14 @@ func ChangePassEmail(c *gin.Context) {
 	}
 	_, isOk, _, _ := TokenProcess(token)
 	if !isOk {
-		c.AbortWithStatusJSON(400, gin.H{"message": "Authentication error."})
+		c.String(http.StatusBadRequest, "Authentication error.")
 		return
 	}
 	//modificar usuario
 	hasEffect, err := db.ModifyUser(user, id)
 	if !hasEffect {
-		c.AbortWithStatusJSON(400, gin.H{"message": "An error has ocurred trying to set a new password." + err.Error()})
+		c.String(http.StatusInternalServerError, "An error has ocurred trying to set a new password."+err.Error())
 		return
-		// c.String(400, "An error has ocurred trying to set a new password"+err.Error()) // test
 	}
 	c.String(http.StatusCreated, "Success")
 }

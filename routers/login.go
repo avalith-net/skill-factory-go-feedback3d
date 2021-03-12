@@ -43,11 +43,5 @@ func Login(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, resp)
 
-	//cookie set for expirationTime var time
-	// http.SetCookie(w, &http.Cookie{
-	// 	Name:    "token",
-	// 	Value:   jwtKey,
-	// 	Expires: expirationTime,
-	// })
-	c.SetCookie("token", jwtKey, 3600, "/", "localhost", false, true)
+	c.SetCookie("token", jwtKey, int(expirationTime.Unix()), "/", "localhost", false, true)
 }

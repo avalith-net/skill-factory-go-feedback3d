@@ -1,18 +1,21 @@
 package middleware
 
 import (
-	"net/http"
+	"fmt"
 
 	"github.com/blotin1993/feedback-api/db"
+	"github.com/gin-gonic/gin"
 )
 
 //CheckDb middleware.
-func CheckDb(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func CheckDb() gin.HandlerFunc {
+	fmt.Println("Estoy funcionando")
+	return func(c *gin.Context) {
 		if db.CheckConnection() == 0 {
-			http.Error(w, "Connection lost.", 500)
+			c.AbortWithStatusJSON(500, gin.H{"message": "Connection lost."})
+			// http.Error(w, "Connection lost.", 500)
 			return
 		}
-		next.ServeHTTP(w, r)
+		c.Next()
 	}
 }

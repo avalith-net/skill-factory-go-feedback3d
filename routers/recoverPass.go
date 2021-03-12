@@ -7,18 +7,19 @@ import (
 	"github.com/blotin1993/feedback-api/db"
 	jwt "github.com/blotin1993/feedback-api/services/auth"
 	services "github.com/blotin1993/feedback-api/services/email"
+	"github.com/gin-gonic/gin"
 )
 
 //RecoverPass - receive the user data from DataBase and send an Email with his current password
-func RecoverPass(w http.ResponseWriter, r *http.Request) {
-	email := r.URL.Query().Get("email")
+func RecoverPass(c *gin.Context) {
+	email := c.Query("email")
 	if len(email) < 1 {
-		http.Error(w, "must complete email form", http.StatusBadRequest)
+		c.String(http.StatusBadRequest, "must complete email form")
 		return
 	}
 	user, mailExist, _ := db.UserAlreadyExist(email)
 	if !mailExist {
-		http.Error(w, "Wrong mail.", 400)
+		c.String(http.StatusBadRequest, "Wrong mail.")
 		return
 	}
 
@@ -30,8 +31,8 @@ func RecoverPass(w http.ResponseWriter, r *http.Request) {
 
 	//Email send function
 	if !services.SendEmail(email, "Get your password.", bodyString) {
-		http.Error(w, "An error has ocurred sending the email"+err.Error(), 400)
+		c.String(http.StatusBadRequest, "An error has ocurred sending the email"+err.Error())
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	c.String(http.StatusCreated, "Success")
 }

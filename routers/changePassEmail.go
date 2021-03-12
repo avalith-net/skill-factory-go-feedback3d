@@ -5,16 +5,17 @@ import (
 
 	"github.com/blotin1993/feedback-api/db"
 	"github.com/blotin1993/feedback-api/models"
+	"github.com/gin-gonic/gin"
 )
 
 //ChangePassEmail .
-func ChangePassEmail(w http.ResponseWriter, r *http.Request) {
+func ChangePassEmail(c *gin.Context) {
 	//parámetros: id, token, newpass
-	id := r.URL.Query().Get("id")
-	token := r.URL.Query().Get("token")
-	newPass := r.URL.Query().Get("newpass")
+	id := c.Query("id")
+	token := c.Query("token")
+	newPass := c.Query("newpass")
 	if len(newPass) < 6 {
-		http.Error(w, "The new password must be at least 6 characters long", 400)
+		c.AbortWithStatusJSON(400, gin.H{"message": "The new password must be at least 6 characters long"})
 		return
 	}
 	user := models.User{
@@ -22,13 +23,15 @@ func ChangePassEmail(w http.ResponseWriter, r *http.Request) {
 	}
 	_, isOk, _, _ := TokenProcess(token)
 	if !isOk {
-		http.Error(w, "Authentication error.", 400)
+		c.AbortWithStatusJSON(400, gin.H{"message": "Authentication error."})
 		return
 	}
 	//modificar usuario
 	hasEffect, err := db.ModifyUser(user, id)
 	if !hasEffect {
-		http.Error(w, "An error has ocurred trying to set a new password."+err.Error(), 400)
+		c.AbortWithStatusJSON(400, gin.H{"message": "An error has ocurred trying to set a new password." + err.Error()})
+		return
+		// c.String(400, "An error has ocurred trying to set a new password"+err.Error()) // test
 	}
-	w.WriteHeader(http.StatusCreated)
+	c.String(http.StatusCreated, "Success")
 }

@@ -11,7 +11,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//Login validation
+// Login godoc
+// @Description login to the app.
+// @id login
+// @Summary is used to login to the application.
+// @Param credentials body string true "Json body with email and password"
+// @Accept  json
+// @Success 201 {string} string "Successful Login."
+// @Header 201 {string} string "Status created"
+// @Failure 400 {string} string "Wrong mail or password."
+// @Failure 500 {string} string "Error generating the token."
+// @Failure default {string} string "An error has ocurred"
+// @Router /login [post]
 func Login(c *gin.Context) {
 
 	var usu models.User
@@ -27,7 +38,7 @@ func Login(c *gin.Context) {
 	}
 	document, exists := db.LoginAttempt(usu.Email, usu.Password)
 	if exists == false {
-		c.String(http.StatusBadRequest, "Wrong user or password.")
+		c.String(http.StatusBadRequest, "Wrong mail or password.")
 		return
 	}
 	expirationTime := time.Now().Add(24 * time.Hour)

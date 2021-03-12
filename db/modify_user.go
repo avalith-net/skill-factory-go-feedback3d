@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/blotin1993/feedback-api/auth"
 	"github.com/blotin1993/feedback-api/models"
-	services "github.com/blotin1993/feedback-api/services/auth"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -31,7 +31,7 @@ func ModifyUser(u models.User, ID string) (bool, error) {
 		register["profilePicture"] = u.ProfilePicture
 	}
 	if len(u.Password) > 0 {
-		u.Password, _ = services.PassEncrypt(u.Password)
+		u.Password, _ = auth.PassEncrypt(u.Password)
 		register["password"] = u.Password
 	}
 	updtString := bson.M{

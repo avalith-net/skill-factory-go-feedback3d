@@ -1,13 +1,13 @@
-package routers
+package controller
 
 import (
 	"encoding/json"
 	"net/http"
 	"time"
 
+	"github.com/blotin1993/feedback-api/auth"
 	"github.com/blotin1993/feedback-api/db"
 	"github.com/blotin1993/feedback-api/models"
-	jwt "github.com/blotin1993/feedback-api/services/auth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,7 +31,7 @@ func Login(c *gin.Context) {
 		return
 	}
 	expirationTime := time.Now().Add(24 * time.Hour)
-	jwtKey, err := jwt.GenerateJWT(document, expirationTime)
+	jwtKey, err := auth.GenerateJWT(document, expirationTime)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Error generating the token "+err.Error())
 		return

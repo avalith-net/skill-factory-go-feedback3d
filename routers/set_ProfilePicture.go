@@ -8,27 +8,27 @@ import (
 
 	"github.com/blotin1993/feedback-api/db"
 	"github.com/blotin1993/feedback-api/models"
+	"github.com/gin-gonic/gin"
 )
 
 //SetProfilePicture is used to set the profile picture
-func SetProfilePicture(w http.ResponseWriter, r *http.Request) {
-	file, handler, err := r.FormFile("profilePicture")
+func SetProfilePicture(c *gin.Context) {
+	file, _ := c.FormFile("profilePicture")
+	fileContent, _ := file.Open()
+	var extension = strings.Split(file.Filename, ".")[1]
 
-	var extension = strings.Split(handler.Filename, ".")[1]
-
-	/* The profile picture is stored in "profilePicture" folder that is previously created to make sure
-	that everything is able to work : folder uploads and inside: folder profilePicture*/
-	var fProfilePicture string = "uploads/profilePicture/" + IDUser + "." + extension
+	// /* The profile picture is stored in "profilePicture" folder that is previously created to make sure
+	// that everything is able to work : folder uploads and inside: folder profilePicture*/
+	fProfilePicture := "uploads/profilePicture/" + IDUser + "." + extension
 
 	f, err := os.OpenFile(fProfilePicture, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
-		http.Error(w, "Error setting account picture  "+err.Error(), http.StatusBadRequest)
+		c.String(http.StatusBadRequest, "Error setting account picture  "+err.Error())
 		return
 	}
-
-	_, err = io.Copy(f, file)
+	_, err = io.Copy(f, fileContent)
 	if err != nil {
-		http.Error(w, "Error trying to copy the picture "+err.Error(), http.StatusBadRequest)
+		c.String(http.StatusBadRequest, "Error trying to copy the picture  "+err.Error())
 		return
 	}
 
@@ -39,11 +39,9 @@ func SetProfilePicture(w http.ResponseWriter, r *http.Request) {
 
 	status, err = db.ModifyUser(user, IDUser)
 	if err != nil || status == false {
-		http.Error(w, "Database error "+err.Error(), http.StatusBadRequest)
+		c.String(http.StatusBadRequest, "Database error  "+err.Error())
 		return
 	}
 
-	w.Header().Set("Content-type", "application/json")
-
-	w.WriteHeader(http.StatusCreated)
+	c.String(http.StatusCreated, "Success")
 }

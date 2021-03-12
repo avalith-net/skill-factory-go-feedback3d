@@ -1,19 +1,17 @@
 package routers
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/blotin1993/feedback-api/db"
+	"github.com/gin-gonic/gin"
 )
 
 //GetFeed is used to set the profile picture
-func GetFeed(w http.ResponseWriter, r *http.Request) {
+func GetFeed(c *gin.Context) {
 	feedSlice, err := db.GetFeedFromDb(IDUser)
 	if err != nil {
-		http.Error(w, "Error"+err.Error(), 400)
+		c.String(http.StatusBadRequest, "Error"+err.Error())
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(feedSlice)
+	c.JSON(http.StatusCreated, feedSlice)
 }

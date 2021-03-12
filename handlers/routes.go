@@ -1,32 +1,25 @@
 package handlers
 
 import (
-	"log"
-	"net/http"
-	"os"
-
 	"github.com/blotin1993/feedback-api/middleware"
 	"github.com/blotin1993/feedback-api/routers"
-	"github.com/gorilla/mux"
-	"github.com/rs/cors"
+	"github.com/gin-gonic/gin"
 )
 
 //SetRoutes  ...
 func SetRoutes() {
-	router := mux.NewRouter()
+	r := gin.Default()
+	r.Use(middleware.CheckDb())
 
 	//Endpoints ------------------------------------------------------------------------------------
-	router.HandleFunc("/sign_up", middleware.CheckDb(routers.SignUp)).Methods("POST")
-	router.HandleFunc("/login", middleware.CheckDb(routers.Login)).Methods("POST")
-	router.HandleFunc("/feedback", middleware.CheckDb(middleware.ValidateJWT(routers.FeedbackTry))).Methods("POST")
-	router.HandleFunc("/setProfilePic", middleware.CheckDb(middleware.ValidateJWT(routers.SetProfilePicture))).Methods("POST")
-	router.HandleFunc("/recoverPass", middleware.CheckDb(middleware.ValidateJWT(routers.RecoverPass))).Methods("POST")
-	router.HandleFunc("/getfb", middleware.CheckDb(middleware.ValidateJWT(routers.GetFeed))).Methods("GET")
-	router.HandleFunc("/changePassword", middleware.CheckDb(routers.ChangePassEmail)).Methods("POST")
-
+	r.POST("/sign_up", routers.SignUp)
+	r.POST("/login", routers.Login)
+	r.POST("/feedback", middleware.ValidateJWT(), routers.FeedbackTry)
+	r.POST("/setProfilePic", middleware.ValidateJWT(), routers.SetProfilePicture)
+	r.POST("/recoverPass", middleware.ValidateJWT(), routers.RecoverPass)
+	r.GET("/getfb", middleware.ValidateJWT(), routers.GetFeed)
+	r.POST("/changePassword", routers.ChangePassEmail)
 	//-----------------------------------------------------------------------------------------------
 
-	PORT := os.Getenv("PORT")
-	handler := cors.AllowAll().Handler(router)
-	log.Fatal(http.ListenAndServe(":"+PORT, handler))
+	r.Run()
 }

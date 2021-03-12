@@ -15,18 +15,17 @@ func GetUser(ID string) (models.ReturnUser, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	db := MongoCN.Database("feedback-api")
+	db := MongoCN.Database("feedback-db")
 	col := db.Collection("users")
 
 	var user models.ReturnUser
 	objID, _ := primitive.ObjectIDFromHex(ID)
-
+	fmt.Println(objID)
 	condicion := bson.M{
 		"_id": objID,
 	}
 	err := col.FindOne(ctx, condicion).Decode(&user)
 	if err != nil {
-		fmt.Println("User not found " + err.Error())
 		return user, err
 	}
 	return user, nil

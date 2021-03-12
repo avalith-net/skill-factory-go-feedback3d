@@ -7,33 +7,43 @@ import (
 
 	"github.com/blotin1993/feedback-api/db"
 	"github.com/blotin1993/feedback-api/models"
+	"github.com/gin-gonic/gin"
 
 	"github.com/fatih/structs"
 )
 
 //FeedbackTry is used to process our feedbacks
-func FeedbackTry(w http.ResponseWriter, r *http.Request) {
-	rID := r.URL.Query().Get("target_id")
+func FeedbackTry(c *gin.Context) {
+	rID := c.Query("target_id")
 	if len(rID) < 1 {
-		http.Error(w, "ID Error", http.StatusBadRequest)
+		c.String(http.StatusBadRequest, "ID Error")
+		return
+	}
+	user, err := db.GetUser(rID)
+	_, isFound, _ := db.UserAlreadyExist(user.Email)
+	if !isFound {
+		c.String(http.StatusBadRequest, "User was not found.")
 		return
 	}
 	var fb models.Feedback
-
-	err := json.NewDecoder(r.Body).Decode(&fb)
+	err = json.NewDecoder(c.Request.Body).Decode(&fb)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Check your form.")
+		return
+	}
 
 	//-------Feedback validation------
 	if structs.IsZero(fb) || !hasZeroGroup(fb.PerformanceArea, fb.TeamArea, fb.TechArea) {
-		http.Error(w, "You must enter at least one complete area", 400)
+		c.String(http.StatusBadRequest, "You must enter at least one complete area")
 		return
 	}
 
 	if !validateMsgLength(1615, fb.Message) { //1615 xq toma saltos de pagina como caracteres.
-		http.Error(w, "Message cannot be longer than 1500 characters.", 400)
+		c.String(http.StatusBadRequest, "Message cannot be longer than 1500 characters")
 		return
 	}
 	if !validateMsgLength(540, fb.TechArea.Message, fb.TeamArea.Message, fb.PerformanceArea.Message) { //40 xq toma saltos de página
-		http.Error(w, "Area Messages cannot be longer than 500 characters.", 400)
+		c.String(http.StatusBadRequest, "Area Messages cannot be longer than 500 characters.")
 		return
 	}
 	//-----------------------------------
@@ -45,14 +55,15 @@ func FeedbackTry(w http.ResponseWriter, r *http.Request) {
 	_, status, err := db.AddFeedback(fb)
 
 	if err != nil {
-		http.Error(w, "An error has ocurred. Try again later "+err.Error(), 400)
+		c.String(http.StatusInternalServerError, "An error has ocurred. Try again later "+err.Error())
+		// c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 	if status == false {
-		http.Error(w, "Database error.", 400)
+		c.String(http.StatusInternalServerError, "Database error.")
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	c.String(http.StatusCreated, "Success")
 }
 
 func validateMsgLength(maxLen int, Amsg ...string) bool {

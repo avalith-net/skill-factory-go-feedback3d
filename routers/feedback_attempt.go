@@ -19,15 +19,16 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusBadRequest, "ID Error")
 		return
 	}
-	// user, err := db.GetUser(rID)
-	// if err != nil {
-	// 	c.String(http.StatusBadRequest, "User "+user.Name+"Not registered.")
-	// 	return
-	// }
+	user, err := db.GetUser(rID)
+	_, isFound, _ := db.UserAlreadyExist(user.Email)
+	if !isFound {
+		c.String(http.StatusBadRequest, "User was not found.")
+		return
+	}
 	var fb models.Feedback
-	err := json.NewDecoder(c.Request.Body).Decode(&fb)
+	err = json.NewDecoder(c.Request.Body).Decode(&fb)
 	if err != nil {
-		c.String(http.StatusBadRequest, "User Not registered.")
+		c.String(http.StatusBadRequest, "Check your form.")
 		return
 	}
 

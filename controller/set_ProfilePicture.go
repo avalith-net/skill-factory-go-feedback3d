@@ -11,7 +11,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//SetProfilePicture is used to set the profile picture
+// SetProfilePicture godoc
+// @Description get string by profile picture
+// @profilePicture change the picture
+// @Summary is used to change the account picture.
+// @Param profilePicture query set "ProfilePicture"
+// @Success 201 {string} string "Profile picture setted successfully."
+// @Header 201 {string} string "Status created"
+// @Failure 400 {string} string "Error setting account picture."
+// @Failure 500 {string} string "Error trying to copy the picture."
+// @Failure default {string} string "Database error"
+// @Router /setProfilePic [post]
 func SetProfilePicture(c *gin.Context) {
 	file, _ := c.FormFile("profilePicture")
 	fileContent, _ := file.Open()

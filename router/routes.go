@@ -36,6 +36,7 @@ func SetRoutes() {
 		r.POST("/recoverPass", middleware.ValidateJWT(), controller.RecoverPass)
 		r.GET("/getfb", middleware.ValidateJWT(), controller.GetFeed)
 		r.POST("/changePassword", controller.ChangePassEmail)
+		r.POST("/fbRequest", middleware.ValidateJWT(), controller.RequestFeedback)
 	}
 	//-----------------------------------------------------------------------------------------------
 	// use ginSwagger middleware to serve the API docs

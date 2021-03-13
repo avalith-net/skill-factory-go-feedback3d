@@ -12,7 +12,7 @@ import (
 	"github.com/fatih/structs"
 )
 
-//FeedbackTry is used to process our feedbacks
+// FeedbackTry godoc
 func FeedbackTry(c *gin.Context) {
 	rID := c.Query("target_id")
 	if len(rID) < 1 {

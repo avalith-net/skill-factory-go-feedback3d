@@ -4,15 +4,16 @@ import (
 	"net/http"
 
 	"github.com/blotin1993/feedback-api/db"
+	"github.com/gin-gonic/gin"
 )
 
 //CheckDb middleware.
-func CheckDb(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func CheckDb() gin.HandlerFunc {
+	return func(c *gin.Context) {
 		if db.CheckConnection() == 0 {
-			http.Error(w, "Connection lost.", 500)
+			c.String(http.StatusInternalServerError, "Connection lost.")
 			return
 		}
-		next.ServeHTTP(w, r)
+		c.Next()
 	}
 }

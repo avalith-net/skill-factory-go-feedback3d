@@ -3,17 +3,18 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/blotin1993/feedback-api/routers"
+	"github.com/blotin1993/feedback-api/controller"
+	"github.com/gin-gonic/gin"
 )
 
 //ValidateJWT is used to check the jwt passed as parameter.
-func ValidateJWT(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		_, _, _, err := routers.TokenProcess(r.Header.Get("Authorization"))
+func ValidateJWT() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		_, _, _, err := controller.TokenProcess(c.GetHeader("Authorization"))
 		if err != nil {
-			http.Error(w, "Token error."+err.Error(), http.StatusBadRequest)
+			c.String(http.StatusInternalServerError, "Token error.")
 			return
 		}
-		next.ServeHTTP(w, r)
+		c.Next()
 	}
 }

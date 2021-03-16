@@ -16,6 +16,7 @@ import (
 // @id login
 // @Summary is used to login to the application.
 // @Param credentials body string true "Json body with email and password"
+// @Param token header string true "token"
 // @Accept  json
 // @Success 201 {string} string "Successful Login."
 // @Header 201 {string} string "Status created"

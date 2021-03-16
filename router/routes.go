@@ -40,6 +40,7 @@ func SetRoutes() {
 			r.POST("/setProfilePic", controller.SetProfilePicture)
 			r.POST("/recoverPass", controller.RecoverPass)
 			r.GET("/getfb", controller.GetFeed)
+			r.POST("/fbRequest", controller.RequestFeedback)
 		}
 		r.POST("/changePassword", controller.ChangePassEmail)
 	}

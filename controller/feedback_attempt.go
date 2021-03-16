@@ -42,7 +42,7 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusBadRequest, "Message cannot be longer than 1500 characters")
 		return
 	}
-	if !validateMsgLength(540, fb.TechArea.Message, fb.TeamArea.Message, fb.PerformanceArea.Message) { //40 xq toma saltos de página
+	if !validateMsgLength(541, fb.TechArea.Message, fb.TeamArea.Message, fb.PerformanceArea.Message) { //40 xq toma saltos de página
 		c.String(http.StatusBadRequest, "Area Messages cannot be longer than 500 characters.")
 		return
 	}
@@ -75,14 +75,15 @@ func validateMsgLength(maxLen int, Amsg ...string) bool {
 	return true
 }
 
-func hasZeroGroup(gr ...interface{}) bool {
+func hasZeroGroup(group ...interface{}) bool {
 	count := 0
-	for _, field := range gr {
-		if structs.HasZero(field) {
-			count++
+	for _, field := range group {
+		if !structs.HasZero(field) {
+			return true
 		}
+		count++
 	}
-	if count == len(gr) {
+	if count == len(group) {
 		return false
 	}
 	return true

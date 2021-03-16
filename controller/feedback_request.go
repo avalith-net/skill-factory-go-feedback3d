@@ -1,11 +1,11 @@
-package routers
+package controller
 
 import (
 	"net/http"
 	"time"
 
 	"github.com/blotin1993/feedback-api/db"
-	"github.com/blotin1993/feedback-api/models"
+	"github.com/gin-gonic/gin"
 
 	services "github.com/blotin1993/feedback-api/services/email"
 )
@@ -24,22 +24,24 @@ import (
 // @Failure default {string} string "An error has ocurred"
 // @Router /fbRequest [post]
 func RequestFeedback(c *gin.Context) {
-	var userID string
-	var userR models.ReturnUser
-
-	userID := c.Query("id")
-
-	userR, err := db.GetUser(userID)
+	id := c.Query("id")
+	if len(id) < 1 {
+		c.String(http.StatusBadRequest, "Error with the request.")
+		return
+	}
+	user, err := db.GetUser(id)
 	if err != nil {
-		http.Error(w, "internal error!", http.StatusBadRequest)
+		c.String(http.StatusBadRequest, "User not found.")
 		return
 	}
 
-	bodyString := "Hi <b><i>" + userR.Name + "</i></b>!\n" +
-		"I'd like to ask a few questions about your working experience with me. It's important to help me to improve.\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format("2006.01.02 15:04:05")
+	bodyString := "Hi <b><i>" + user.Name + "</i></b>!\n" +
+		"I'd like to ask a few questions about your working experience with me. It's important to help me to improve." +
+		"Follow this link to give me feedback: http:localhost:8080/feedback?target_id=" + id +
+		"\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format("2006.01.02 15:04:05")
 
 	//Email send function
-	if !services.SendEmail(userR.Email, "Feedback request.", bodyString) {
+	if !services.SendEmail(user.Email, "Feedback request.", bodyString) {
 		c.String(http.StatusBadRequest, "An error has ocurred sending the email")
 		return
 	}

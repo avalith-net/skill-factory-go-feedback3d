@@ -31,12 +31,18 @@ func SetRoutes() {
 	{
 		r.POST("/sign_up", controller.SignUp)
 		r.POST("/login", controller.Login)
-		r.POST("/feedback", middleware.ValidateJWT(), controller.FeedbackTry)
-		r.POST("/setProfilePic", middleware.ValidateJWT(), controller.SetProfilePicture)
-		r.POST("/recoverPass", middleware.ValidateJWT(), controller.RecoverPass)
-		r.GET("/getfb", middleware.ValidateJWT(), controller.GetFeed)
+
+		//using jwt
+		jwt := r.Group("/")
+		jwt.Use(middleware.ValidateJWT())
+		{
+			r.POST("/feedback", controller.FeedbackTry)
+			r.POST("/setProfilePic", controller.SetProfilePicture)
+			r.POST("/recoverPass", controller.RecoverPass)
+			r.GET("/getfb", controller.GetFeed)
+			r.POST("/fbRequest", controller.RequestFeedback)
+		}
 		r.POST("/changePassword", controller.ChangePassEmail)
-		r.POST("/fbRequest", middleware.ValidateJWT(), controller.RequestFeedback)
 	}
 	//-----------------------------------------------------------------------------------------------
 	// use ginSwagger middleware to serve the API docs

@@ -12,7 +12,7 @@ import (
 )
 
 // SetProfilePicture godoc
-// @Description get string by profile picture
+// @Description is used to change the account picture.
 // @id setProfilePicture
 // @Summary is used to change the account picture.
 // @Success 201 {string} string "Profile picture setted successfully."

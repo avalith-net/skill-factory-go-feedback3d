@@ -13,7 +13,7 @@ import (
 
 // @title feedback API
 // @version 1.0
-// @description Aplicación que permite realizar feedbacks entre los miembros de un equipo de trabajo. Es un proceso mediante el cual se recogen los comentarios de los miembros del equipo (desarrolladores), de los jefes de equipo, de los clientes internos, de los clientes externos o de otras partes interesadas(que los suben directamente o los realizan a través del equipo de entrega), así como una autoevaluación de los miembros de cada equipo.
+// @description Application used to give feedback between members of the same workgroup.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
@@ -29,27 +29,25 @@ func SetRoutes() {
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
 
-	// Front end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	r.GET("/changePassword", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "change_pass.tmpl", gin.H{})
-	})
 	endpoints := r.Group("/")
-	//Endpoints Backend------------------------------------------------------------------------------------
+	//Endpoints ------------------------------------------------------------------------------------
 	endpoints.Use(middleware.CheckDb())
 	{
-		r.POST("/sign_up", controller.SignUp)
-		r.POST("/login", controller.Login)
-
+		endpoints.POST("/sign_up", controller.SignUp)
+		endpoints.POST("/login", controller.Login)
 		//using jwt
-		jwt := r.Group("/")
+		jwt := endpoints.Group("/")
 		jwt.Use(middleware.ValidateJWT())
 		{
-			r.POST("/feedback", controller.FeedbackAttempt)
-			r.POST("/setProfilePic", controller.SetProfilePicture)
-			r.POST("/recoverPass", controller.RecoverPass)
-			r.POST("/fbRequest", controller.RequestFeedback)
+			jwt.POST("/feedback", controller.FeedbackTry)
+			jwt.POST("/setProfilePic", controller.SetProfilePicture)
+			jwt.POST("/fbRequest", controller.RequestFeedback)
 		}
-		r.POST("/changePassword", controller.ChangePassEmail)
+		endpoints.GET("/changePassword", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "change_pass.tmpl", gin.H{})
+		})
+		endpoints.POST("/recoverPass", controller.RecoverPass)
+		endpoints.POST("/changePassword", controller.ChangePassEmail)
 	}
 	//-----------------------------------------------------------------------------------------------
 	// use ginSwagger middleware to serve the API docs

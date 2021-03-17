@@ -15,9 +15,7 @@ import (
 // @id RequestFeedback
 // @Summary is used to request a feedback to other user.
 // @Param id query string true "Account ID"
-// @Param token header string true "JWT Token"
-// @name Authorization
-// @Produce plain
+// @Param Authorization header string true "jwt token"
 // @Success 201 {string} string "Email sended successfully."
 // @Header 201 {string} string "Status created"
 // @Failure 400 {string} string "internal error"

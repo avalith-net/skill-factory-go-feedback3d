@@ -12,20 +12,27 @@ import (
 	"github.com/fatih/structs"
 )
 
-// Feedback Attempt godoc
-// @Description give feedback
-// @id feedattempt
-// @Summary is used to give a feedback to a user.
-// @Param id query string true "target ID"
-// @Param token query string true "JWT Token"
-// @Produce plain
-// @Success 201 {string} string "Email sended successfully."
+// Feedback  godoc
+// @Description gives feedback to the user
+// @id fb
+// @Summary is used to give feedback to users.
+// @Param target_id query string true "Target ID"
+// @Param feedback body string true "Json body with email and password"
+// @Param Authorization header string true "JWT Token"
+// @Accept  json
+// @Success 201 {string} string "Successful Login."
 // @Header 201 {string} string "Status created"
-// @Failure 400 {string} string "internal error"
-// @Failure 500 {string} string "An error has ocurred sending the email."
+// @Failure 400 {string} string "Wrong mail or password."
+// @Failure 500 {string} string "Error generating the token."
 // @Failure default {string} string "An error has ocurred"
-// @Router /fbRequest [post]
-func FeedbackAttempt(c *gin.Context) {
+// @Router /feedback [post]
+func FeedbackTry(c *gin.Context) {
+
+	/* Métricas de Feedback:
+	Let´s work on this.
+	Reach the Goal.
+	Relevant Performance.
+	Master. */
 	rID := c.Query("target_id")
 	if len(rID) < 1 {
 		c.String(http.StatusBadRequest, "ID Error")

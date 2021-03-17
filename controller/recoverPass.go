@@ -10,7 +10,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//RecoverPass - receive the user data from DataBase and send an Email with his current password
+// RecoverPass godoc
+// @Description receive the user data from DataBase and send an Email with his current password
+// @id recpass
+// @Summary is used to recover our password
+// @Param email query string true "email"
+// @Success 201 {string} string "Email sent."
+// @Header 201 {string} string "Status created"
+// @Failure 400 {string} string "Wrong mail."
+// @Failure 500 {string} string "Internal Error."
+// @Failure default {string} string "An error has ocurred"
+// @Router /recoverPass [post]
 func RecoverPass(c *gin.Context) {
 	email := c.Query("email")
 	if len(email) < 1 {

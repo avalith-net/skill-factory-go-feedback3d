@@ -10,9 +10,9 @@ import (
 )
 
 // Registro godoc
-// @Description Registro de un usuario nuevo
+// @Description Used to register to the app
 // @id registro
-// @Summary Registro de un usuario nuevo
+// @Summary Used to register to the app
 // @Param credentials body string true "Json body with name, lastname, email and password"
 // @Accept  json
 // @Success 201 {string} string "User created."

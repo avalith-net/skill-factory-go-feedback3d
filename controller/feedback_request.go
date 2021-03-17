@@ -24,7 +24,7 @@ import (
 // @Router /fbRequest [post]
 func RequestFeedback(c *gin.Context) {
 	id := c.Query("id")
-	if len(id) < 1 {
+	if len(id) < 1 || id == IDUser {
 		c.String(http.StatusBadRequest, "Error with the request.")
 		return
 	}

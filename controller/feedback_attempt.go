@@ -12,8 +12,20 @@ import (
 	"github.com/fatih/structs"
 )
 
-// FeedbackTry godoc
-func FeedbackTry(c *gin.Context) {
+// Feedback Attempt godoc
+// @Description give feedback
+// @id feedattempt
+// @Summary is used to give a feedback to a user.
+// @Param id query string true "target ID"
+// @Param token query string true "JWT Token"
+// @Produce plain
+// @Success 201 {string} string "Email sended successfully."
+// @Header 201 {string} string "Status created"
+// @Failure 400 {string} string "internal error"
+// @Failure 500 {string} string "An error has ocurred sending the email."
+// @Failure default {string} string "An error has ocurred"
+// @Router /fbRequest [post]
+func FeedbackAttempt(c *gin.Context) {
 	rID := c.Query("target_id")
 	if len(rID) < 1 {
 		c.String(http.StatusBadRequest, "ID Error")

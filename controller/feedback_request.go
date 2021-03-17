@@ -15,7 +15,8 @@ import (
 // @id RequestFeedback
 // @Summary is used to request a feedback to other user.
 // @Param id query string true "Account ID"
-// @Header token string true "Token"
+// @Param token header string true "JWT Token"
+// @name Authorization
 // @Produce plain
 // @Success 201 {string} string "Email sended successfully."
 // @Header 201 {string} string "Status created"
@@ -37,7 +38,7 @@ func RequestFeedback(c *gin.Context) {
 
 	bodyString := "Hi <b><i>" + user.Name + "</i></b>!\n" +
 		"I'd like to ask a few questions about your working experience with me. It's important to help me to improve." +
-		"Follow this link to give me feedback: http:localhost:8080/feedback?target_id=" + id +
+		"Follow this link to give me feedback: http:localhost:8080/feedback?target_id=" + IDUser +
 		"\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format("2006.01.02 15:04:05")
 
 	//Email send function

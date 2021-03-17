@@ -36,8 +36,8 @@ func RequestFeedback(c *gin.Context) {
 
 	bodyString := "Hi <b><i>" + user.Name + "</i></b>!\n" +
 		"I'd like to ask a few questions about your working experience with me. It's important to help me to improve." +
-		"Follow this link to give me feedback: http:localhost:8080/feedback?target_id=" + IDUser +
-		"\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format("2006.01.02 15:04:05")
+		"Follow this link to give me feedback: <b><i>http:localhost:8080/feedback?target_id=" + IDUser +
+		"</i></b>\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format("2006.01.02 15:04:05")
 
 	//Email send function
 	if !services.SendEmail(user.Email, "Feedback request.", bodyString) {

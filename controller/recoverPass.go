@@ -37,7 +37,7 @@ func RecoverPass(c *gin.Context) {
 	expirationTime := time.Now().Add(1 * time.Hour)
 	jwtKey, err := auth.GenerateJWT(user, expirationTime)
 
-	bodyString := "Hey <b><i>" + user.Name + "</i></b>!\nFollow this link to recover your password.\n <a>http:localhost:8080/changePassword?id=" + stringObjectID + "&token=Bearer " + jwtKey + "</a>"
+	bodyString := "Hey <b><i>" + user.Name + "</i></b>!\nFollow this link to recover your password.\n <b><i>http:localhost:8080/changePassword?id=" + stringObjectID + "&token=Bearer " + jwtKey + "</i></b>"
 
 	//Email send function
 	if !services.SendEmail(email, "Get your password.", bodyString) {

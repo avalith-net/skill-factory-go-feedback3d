@@ -29,20 +29,21 @@ func SetRoutes() {
 	//Endpoints ------------------------------------------------------------------------------------
 	endpoints.Use(middleware.CheckDb())
 	{
-		r.POST("/sign_up", controller.SignUp)
-		r.POST("/login", controller.Login)
+		endpoints.POST("/sign_up", controller.SignUp)
+		endpoints.POST("/login", controller.Login)
 
 		//using jwt
-		jwt := r.Group("/")
+		jwt := endpoints.Group("/")
 		jwt.Use(middleware.ValidateJWT())
 		{
-			r.POST("/feedback", controller.FeedbackTry)
-			r.POST("/setProfilePic", controller.SetProfilePicture)
-			r.POST("/recoverPass", controller.RecoverPass)
-			r.GET("/getfb", controller.GetFeed)
-			r.POST("/fbRequest", controller.RequestFeedback)
+			jwt.POST("/feedback", controller.FeedbackTry)
+			jwt.POST("/setProfilePic", controller.SetProfilePicture)
+			jwt.POST("/recoverPass", controller.RecoverPass)
+			jwt.GET("/getfb", controller.GetFeed)
+			jwt.POST("/fbRequest", controller.RequestFeedback)
 		}
-		r.POST("/changePassword", controller.ChangePassEmail)
+
+		endpoints.POST("/changePassword", controller.ChangePassEmail)
 	}
 	//-----------------------------------------------------------------------------------------------
 	// use ginSwagger middleware to serve the API docs

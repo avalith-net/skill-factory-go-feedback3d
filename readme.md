@@ -1,6 +1,6 @@
 # *feedback-api*
 
-##	Se desarrolla en Go el backend de una aplicación que permite realizar feedbacks entre los miembros de un equipo de trabajo. Es un proceso mediante el cual se recogen los comentarios de los miembros del equipo (desarrolladores), de los jefes de equipo, de los clientes internos, de los clientes externos o de otras partes interesadas (que los suben directamente o los realizan a través del equipo de entrega), así como una autoevaluación de los miembros de cada equipo.Se estructurará el proyecto siguiendo el modelo MVC.
+###	Se desarrolla en Go el backend de una aplicación que permite realizar feedbacks entre los miembros de un equipo de trabajo. Es un proceso mediante el cual se recogen los comentarios de los miembros del equipo (desarrolladores), de los jefes de equipo, de los clientes internos, de los clientes externos o de otras partes interesadas (que los suben directamente o los realizan a través del equipo de entrega), así como una autoevaluación de los miembros de cada equipo. Se estructurará el proyecto siguiendo el modelo MVC.
 
 >Se escribe el código de los endpoints para:
 *	Registro de un usuario nuevo

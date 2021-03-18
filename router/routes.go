@@ -43,6 +43,9 @@ func SetRoutes() {
 			jwt.POST("/setProfilePic", controller.SetProfilePicture)
 			jwt.POST("/fbRequest", controller.RequestFeedback)
 		}
+		endpoints.GET("/feedback", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "feedback.tmpl", gin.H{})
+		})
 		endpoints.GET("/changePassword", func(c *gin.Context) {
 			c.HTML(http.StatusOK, "change_pass.tmpl", gin.H{})
 		})

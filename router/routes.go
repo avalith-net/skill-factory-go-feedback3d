@@ -13,7 +13,7 @@ import (
 
 // @title feedback API
 // @version 1.0
-// @description Application used to give feedback between members of the same workgroup.
+// @description Application used to give feedback between members of a workgroup.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support

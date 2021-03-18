@@ -12,10 +12,9 @@ import (
 )
 
 // SetProfilePicture godoc
-// @Description get string by profile picture
+// @Description is used to change the account picture.
 // @id setProfilePicture
 // @Summary is used to change the account picture.
-// @Param profilePicture query set "ProfilePicture"
 // @Success 201 {string} string "Profile picture setted successfully."
 // @Header 201 {string} string "Status created"
 // @Failure 400 {string} string "Error setting account picture."

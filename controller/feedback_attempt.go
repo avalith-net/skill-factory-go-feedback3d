@@ -33,6 +33,12 @@ func FeedbackTry(c *gin.Context) {
 	Reach the Goal.
 	Relevant Performance.
 	Master. */
+	validUser, _ := db.GetUser(IDUser)
+	if validUser.Enabled == false {
+		c.String(http.StatusUnauthorized, "User not authorized.")
+		return
+	}
+
 	rID := c.Query("target_id")
 	if len(rID) < 1 {
 		c.String(http.StatusBadRequest, "ID Error")

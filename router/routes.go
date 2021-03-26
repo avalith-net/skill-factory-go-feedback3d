@@ -1,6 +1,9 @@
 package router
 
 import (
+	"net/http"
+	"os"
+
 	"github.com/blotin1993/feedback-api/controller"
 	_ "github.com/blotin1993/feedback-api/docs"
 	"github.com/blotin1993/feedback-api/middleware"
@@ -11,7 +14,7 @@ import (
 
 // @title feedback API
 // @version 1.0
-// @description Aplicación que permite realizar feedbacks entre los miembros de un equipo de trabajo.
+// @description Application used to give feedback between members of a workgroup.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
@@ -25,24 +28,39 @@ import (
 func SetRoutes() {
 	//set router
 	r := gin.Default()
+	r.LoadHTMLGlob("templates/*")
+
 	endpoints := r.Group("/")
 	//Endpoints ------------------------------------------------------------------------------------
 	endpoints.Use(middleware.CheckDb())
 	{
-		r.POST("/sign_up", controller.SignUp)
-		r.POST("/login", controller.Login)
-
+		endpoints.POST("/sign_up", controller.SignUp)
+		endpoints.POST("/login", controller.Login)
 		//using jwt
-		jwt := r.Group("/")
+		jwt := endpoints.Group("/")
 		jwt.Use(middleware.ValidateJWT())
 		{
-			r.POST("/feedback", controller.FeedbackTry)
-			r.POST("/setProfilePic", controller.SetProfilePicture)
-			r.POST("/recoverPass", controller.RecoverPass)
-			r.GET("/getfb", controller.GetFeed)
+			jwt.POST("/feedback", controller.FeedbackTry)
+			jwt.POST("/setProfilePic", controller.SetProfilePicture)
+			jwt.POST("/fbRequest", controller.RequestFeedback)
 		}
-		r.POST("/changePassword", controller.ChangePassEmail)
+		endpoints.GET("/feedback", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "feedback.tmpl", gin.H{})
+		})
+		endpoints.GET("/changePassword", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "change_pass.tmpl", gin.H{})
+		})
+		endpoints.POST("/recoverPass", controller.RecoverPass)
+		endpoints.POST("/changePassword", controller.ChangePassEmail)
 	}
+
+	// Admin routes
+	authorized := r.Group("/admin", gin.BasicAuth(gin.Accounts{
+		"admin": os.Getenv("ADMIN_PASS"),
+	}))
+	authorized.GET("/users", controller.GetUsers)
+	authorized.PATCH("/users/:email", controller.BanUser)
+
 	//-----------------------------------------------------------------------------------------------
 	// use ginSwagger middleware to serve the API docs
 	{

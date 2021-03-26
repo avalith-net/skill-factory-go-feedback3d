@@ -11,7 +11,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//SetProfilePicture is used to set the profile picture
+// SetProfilePicture godoc
+// @Description is used to change the account picture.
+// @id setProfilePicture
+// @Summary is used to change the account picture.
+// @Accept  multipart/form-data
+// @Produce  json
+// @Param profilePicture formData file true "account image"
+// @Param Authorization header string true "jwt token"
+// @Success 201 {string} string "Profile picture set successfully."
+// @Header 201 {string} string "Status created"
+// @Failure 400 {string} string "Error setting account picture."
+// @Failure 500 {string} string "Error trying to copy the picture."
+// @Failure default {string} string "Database error"
+// @Router /setProfilePic [post]
 func SetProfilePicture(c *gin.Context) {
 	file, _ := c.FormFile("profilePicture")
 	fileContent, _ := file.Open()

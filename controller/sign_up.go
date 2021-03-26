@@ -9,7 +9,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//SignUp is used to register to the app
+// Registro godoc
+// @Description Used to register to the app
+// @id registro
+// @Summary Used to register to the app
+// @Param credentials body string true "Json body with name, lastname, email and password"
+// @Accept  json
+// @Success 201 {string} string "User created."
+// @Header 201 {string} string "Status created"
+// @Failure 400 {string} string "internal error"
+// @Failure 500 {string} string "An error has ocurred sending the email."
+// @Failure default {string} string "An error has ocurred"
+// @Router /sign_up [post]
 func SignUp(c *gin.Context) {
 
 	var t models.User

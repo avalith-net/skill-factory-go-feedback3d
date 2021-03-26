@@ -1,48 +1,48 @@
-package routers
+package controller
 
 import (
 	"net/http"
 	"time"
 
 	"github.com/blotin1993/feedback-api/db"
-	"github.com/blotin1993/feedback-api/models"
+	"github.com/gin-gonic/gin"
 
 	services "github.com/blotin1993/feedback-api/services/email"
 )
 
-//RequestFeedback func
-func RequestFeedback(w http.ResponseWriter, r *http.Request) {
-	var u models.FeedbackRequest
-	var user models.ReturnUser
-
-	u.ReceiverID = r.URL.Query().Get("id")
-
-	user, e := db.GetUser(u.ReceiverID)
-	if e != nil {
-
+// RequestFeedback godoc
+// @Description get string by id
+// @id RequestFeedback
+// @Summary is used to request a feedback to other user.
+// @Param id query string true "Account ID"
+// @Param Authorization header string true "jwt token"
+// @Success 201 {string} string "Email sended successfully."
+// @Header 201 {string} string "Status created"
+// @Failure 400 {string} string "internal error"
+// @Failure 500 {string} string "An error has ocurred sending the email."
+// @Failure default {string} string "An error has ocurred"
+// @Router /fbRequest [post]
+func RequestFeedback(c *gin.Context) {
+	id := c.Query("id")
+	if len(id) < 1 || id == IDUser {
+		c.String(http.StatusBadRequest, "Error with the request.")
+		return
 	}
-
-	u.ReceiverEmail = user.Email
-
-	if len(u.ReceiverEmail) < 1 {
-		http.Error(w, "must complete email form", http.StatusBadRequest)
+	user, err := db.GetUser(id)
+	if err != nil {
+		c.String(http.StatusBadRequest, "User not found.")
 		return
 	}
 
-	auxUser, mailExist, _ := db.UserAlreadyExist(u.ReceiverEmail)
-	if !mailExist {
-		http.Error(w, "Wrong mail.", 400)
-		return
-	}
-
-	bodyString := "Hi <b><i>" + auxUser.Name + "</i></b>!\n" +
-		"I'd like to ask a few questions about your working experience with me. It's important to help me to improve.\n Thanks for your time!\n\n Feedback-Api \n <i>feedbackapiadm@gmail.com</i>\n " + time.Now().Format("2006.01.02 15:04:05")
+	bodyString := "Hi <b><i>" + user.Name + "</i></b>!\n" +
+		"I'd like to ask a few questions about your working experience with me. It's important to help me to improve." +
+		"Follow this link to give me feedback: <b><i>http:localhost:8080/feedback?target_id=" + IDUser +
+		"</i></b>\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format("2006.01.02 15:04:05")
 
 	//Email send function
-	var err error
-	if !services.SendEmail(auxUser.Email, "Feedback request.", bodyString) {
-		http.Error(w, "An error has ocurred sending the email"+err.Error(), 400)
+	if !services.SendEmail(user.Email, "Feedback request.", bodyString) {
+		c.String(http.StatusBadRequest, "An error has ocurred sending the email")
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	c.String(http.StatusCreated, "Success")
 }

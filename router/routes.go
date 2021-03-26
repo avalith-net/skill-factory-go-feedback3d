@@ -31,7 +31,7 @@ func SetRoutes() {
 	r.LoadHTMLGlob("templates/*")
 
 	endpoints := r.Group("/")
-	//Endpoints ------------------------------CHEQUEAR GET POST , ETC. GET OBTENER, POST CREAR,ETC.------------------------------------------------------
+	//Endpoints ------------------------------------------------------------------------------------
 	endpoints.Use(middleware.CheckDb())
 	{
 		endpoints.POST("/sign_up", controller.SignUp)

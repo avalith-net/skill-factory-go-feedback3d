@@ -18,6 +18,7 @@ func AddRegister(u models.User) (string, bool, error) {
 	col := db.Collection("users")
 	var err error
 	u.Password, err = auth.PassEncrypt(u.Password)
+	u.Enabled = true
 	result, err := col.InsertOne(ctx, u)
 	if err != nil {
 		return "", false, err

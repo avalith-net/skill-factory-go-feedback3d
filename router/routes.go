@@ -2,6 +2,7 @@ package router
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/blotin1993/feedback-api/controller"
 	_ "github.com/blotin1993/feedback-api/docs"
@@ -30,7 +31,7 @@ func SetRoutes() {
 	r.LoadHTMLGlob("templates/*")
 
 	endpoints := r.Group("/")
-	//Endpoints ------------------------------------------------------------------------------------
+	//Endpoints ------------------------------CHEQUEAR GET POST , ETC. GET OBTENER, POST CREAR,ETC.------------------------------------------------------
 	endpoints.Use(middleware.CheckDb())
 	{
 		endpoints.POST("/sign_up", controller.SignUp)
@@ -43,12 +44,23 @@ func SetRoutes() {
 			jwt.POST("/setProfilePic", controller.SetProfilePicture)
 			jwt.POST("/fbRequest", controller.RequestFeedback)
 		}
+		endpoints.GET("/feedback", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "feedback.tmpl", gin.H{})
+		})
 		endpoints.GET("/changePassword", func(c *gin.Context) {
 			c.HTML(http.StatusOK, "change_pass.tmpl", gin.H{})
 		})
 		endpoints.POST("/recoverPass", controller.RecoverPass)
 		endpoints.POST("/changePassword", controller.ChangePassEmail)
 	}
+
+	// Admin routes
+	authorized := r.Group("/admin", gin.BasicAuth(gin.Accounts{
+		"admin": os.Getenv("ADMIN_PASS"),
+	}))
+	authorized.GET("/users", controller.GetUsers)
+	authorized.PATCH("/users/:email", controller.BanUser)
+
 	//-----------------------------------------------------------------------------------------------
 	// use ginSwagger middleware to serve the API docs
 	{

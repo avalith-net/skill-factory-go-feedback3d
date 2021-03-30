@@ -7,6 +7,7 @@ import (
 
 	"github.com/blotin1993/feedback-api/db"
 	"github.com/blotin1993/feedback-api/models"
+	services "github.com/blotin1993/feedback-api/services/email"
 	"github.com/gin-gonic/gin"
 
 	"github.com/fatih/structs"
@@ -88,6 +89,14 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Database error.")
 		return
 	}
+
+	notificationStatus := notify_feedback(fb, c.GetHeader("Authorization"))
+
+	if !notificationStatus {
+		c.String(http.StatusCreated, "Sucess but the notification mail failed")
+		return
+	}
+
 	c.String(http.StatusCreated, "Success")
 }
 
@@ -112,4 +121,26 @@ func hasZeroGroup(group ...interface{}) bool {
 		return false
 	}
 	return true
+}
+
+func notify_feedback(feed models.Feedback, token string) bool {
+
+	/* Find issuer in the database */
+	issuer, err := db.GetUser(feed.IssuerID)
+
+	if err != nil {
+		return false
+	}
+	/* Find receiver in the database */
+	receiver, err := db.GetUser(feed.ReceiverID)
+
+	if err != nil {
+		return false
+	}
+
+	msg := "Hi " + receiver.Name + " " + receiver.LastName + "! \n + I've made you a new feedback, check it here! <a>http:localhost:8080/getfb?id=" + feed.ReceiverID + "</a> \n\n" + issuer.Name + " " + issuer.LastName
+
+	status := services.SendEmail(receiver.Email, "New Feedback Received!", msg)
+
+	return status
 }

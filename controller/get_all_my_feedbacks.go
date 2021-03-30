@@ -10,7 +10,7 @@ import (
 // GetFeed godoc
 // @Description get all feedbacks from db.
 // @id getfeed
-// @Summary is used to get al the feeds of a user.
+// @Summary is used to get al the feedbackss of a user.
 // @Param id query string true "target ID"
 // @Success 201 {string} string "Successful Login."
 // @Header 201 {string} string "Success"

@@ -44,6 +44,7 @@ func SetRoutes() {
 			jwt.POST("/fbRequest", controller.RequestFeedback)
 			jwt.GET("/dashboard", controller.GetFeed)
 			jwt.GET("/search", controller.GetByFullName)
+			jwt.GET("/generalProfile", controller.GetGeneralProfile)
 			admin := jwt.Group("/")
 			admin.Use(middleware.IsAdmin())
 			{

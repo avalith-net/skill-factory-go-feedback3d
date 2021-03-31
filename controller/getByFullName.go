@@ -12,6 +12,12 @@ import (
 // @Description is used to filter users by name
 // @id getbyfullname
 // @Summary used to get all users with certain name
+// @Param Authorization header string true "jwt token"
+// @Param fullname query string true "Search by Name"
+// @Success 200 {string} string "User banned."
+// @Failure 400 {string} string "Unauthorized"
+// @Failure 500 {string} string "An error has ocurred trying to ban the user."
+// @Failure default {string} string "An error has ocurred"
 // @Router /search [get]
 func GetByFullName(c *gin.Context) {
 	//parámetros: pag, agregar.
@@ -45,5 +51,5 @@ func GetByFullName(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, users)
+	c.JSON(http.StatusOK, users)
 }

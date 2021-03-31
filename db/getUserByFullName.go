@@ -6,6 +6,8 @@ import (
 
 	"github.com/blotin1993/feedback-api/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -22,41 +24,64 @@ func GetUserByFullName(name, lastName string) ([]*models.ReturnUser, error) {
 	//Corregir
 	findOptions.SetLimit(20)
 
-	filter := bson.D{
+	filterOne := bson.D{
 		{"$or",
 			bson.A{
 				bson.D{
 					{"$or",
 						bson.A{
 							bson.D{
-								{"name", bson.M{"$regex": `(?i)` + name}},
-								{"lastname", bson.M{"$regex": `(?i)` + lastName}}},
+								{"$and",
+									bson.A{
+										bson.D{{"name", bson.M{"$regex": `(?i)` + name}}},
+										bson.D{{"lastname", bson.M{"$regex": `(?i)` + lastName}}},
+									},
+								},
+							},
 							bson.D{
-								{"name", bson.M{"$regex": `(?i)` + lastName}},
-								{"lastname", bson.M{"$regex": `(?i)` + name}}},
-						}},
-				},
-				bson.D{
-					{"$or",
-						bson.A{
-							bson.D{{"lastname", bson.M{"$regex": `(?i)` + lastName}}},
-							bson.D{{"lastname", bson.M{"$regex": `(?i)` + name}}},
-							bson.D{{"name", bson.M{"$regex": `(?i)` + name}}},
+								{"$and",
+									bson.A{
+										bson.D{{"name", bson.M{"$regex": `(?i)` + lastName}}},
+										bson.D{{"lastname", bson.M{"$regex": `(?i)` + name}}},
+									},
+								},
+							},
 						}},
 				},
 			},
 		},
 	}
 
-	// array in which you can store the decoded documents
-	var results []*models.ReturnUser
+	filterTwo := bson.D{
+		{"$or",
+			bson.A{
+				bson.D{{"lastname", bson.M{"$regex": `(?i)` + lastName}}},
+				bson.D{{"lastname", bson.M{"$regex": `(?i)` + name}}},
+				bson.D{{"name", bson.M{"$regex": `(?i)` + name}}},
+			}},
+	}
 
+	firstResult, err := customFind(col, ctx, filterOne, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	if firstResult == nil {
+		secondResult, err := customFind(col, ctx, filterTwo, findOptions)
+		if err != nil {
+			return nil, err
+		}
+		return secondResult, nil
+	}
+	return firstResult, nil
+}
+
+func customFind(col *mongo.Collection, ctx context.Context, filter primitive.D, findOptions *options.FindOptions) ([]*models.ReturnUser, error) {
 	// Passing bson.D{{}} as the filter matches all documents in the collection
 	cur, err := col.Find(ctx, filter, findOptions)
 	if err != nil {
 		return nil, err
 	}
-
+	var results []*models.ReturnUser
 	// Finding multiple documents returns a cursor
 	// Iterating through the cursor allows us to decode documents one at a time
 	for cur.Next(ctx) {
@@ -77,6 +102,5 @@ func GetUserByFullName(name, lastName string) ([]*models.ReturnUser, error) {
 
 	// Close the cursor once finished
 	cur.Close(ctx)
-
 	return results, nil
 }

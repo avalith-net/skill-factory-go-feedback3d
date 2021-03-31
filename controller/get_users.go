@@ -17,6 +17,7 @@ func GetUsers(c *gin.Context) {
 	users, err := db.GetUsersDb()
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Error loading users...")
+		return
 	}
 
 	c.JSON(http.StatusCreated, users)

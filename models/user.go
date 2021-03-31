@@ -12,5 +12,6 @@ type User struct {
 	Email          string             `bson:"email" json:"email"`
 	Password       string             `bson:"password" json:"password,omitempty"`
 	ProfilePicture string             `bson:"profilePicture" json:"profilePicture,omitempty"`
+	Role           string             `bson:"role" json:"role"`
 	Enabled        bool               `bson:"enabled" json:"enabled,omitempty"`
 }

@@ -13,7 +13,7 @@ func ValidateJWT() gin.HandlerFunc {
 		_, _, _, err := controller.TokenProcess(c.GetHeader("Authorization"))
 		if err != nil {
 			c.String(http.StatusUnauthorized, "Must log in.")
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.Abort()
 		}
 		c.Next()
 	}

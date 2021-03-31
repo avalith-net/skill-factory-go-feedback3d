@@ -14,11 +14,11 @@ func IsAdmin() gin.HandlerFunc {
 		user, err := db.GetUser(controller.IDUser)
 		if err != nil {
 			c.String(http.StatusInternalServerError, "User error.")
-			c.AbortWithStatus(http.StatusInternalServerError)
+			c.Abort()
 		}
 		if user.Role != "admin" {
 			c.String(http.StatusUnauthorized, "Must be admin.")
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.Abort()
 		}
 		c.Next()
 	}

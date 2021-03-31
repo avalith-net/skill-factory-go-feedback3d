@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/blotin1993/feedback-api/models"
@@ -20,7 +19,6 @@ func GetUser(ID string) (models.ReturnUser, error) {
 
 	var user models.ReturnUser
 	objID, _ := primitive.ObjectIDFromHex(ID)
-	fmt.Println(objID)
 	condicion := bson.M{
 		"_id": objID,
 	}

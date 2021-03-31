@@ -8,11 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//  godoc
-// @Description
-// @id
-// @Summary
-// @Router / []
+// Get user by name godoc
+// @Description is used to filter users by name
+// @id getbyfullname
+// @Summary used to get all users with certain name
+// @Router /search [get]
 func GetByFullName(c *gin.Context) {
 	//parámetros: pag, agregar.
 	fullName := c.Query("fullname")

@@ -12,7 +12,7 @@ func CheckDb() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if db.CheckConnection() == 0 {
 			c.String(http.StatusInternalServerError, "Connection lost.")
-			return
+			c.Abort()
 		}
 		c.Next()
 	}

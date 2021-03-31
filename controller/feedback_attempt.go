@@ -7,6 +7,7 @@ import (
 
 	"github.com/blotin1993/feedback-api/db"
 	"github.com/blotin1993/feedback-api/models"
+	services "github.com/blotin1993/feedback-api/services/email"
 	"github.com/gin-gonic/gin"
 
 	"github.com/fatih/structs"
@@ -76,6 +77,13 @@ func FeedbackTry(c *gin.Context) {
 	fb.IssuerID = IDUser
 	fb.ReceiverID = rID
 	fb.Date = time.Now()
+
+	// Send email notification
+
+	msg := "Hi " + user.Name + " " + user.LastName + "! \n You have received a new feedback, check it in your dashboard! <a>http:localhost:8080/dashboard</a> \n\n"
+	services.SendEmail(user.Email, "New Feedback Received!", msg)
+
+	//------------------------------
 
 	_, status, err := db.AddFeedback(fb)
 

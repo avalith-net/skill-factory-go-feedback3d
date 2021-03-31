@@ -7,16 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetFeed godoc
-// @Description get all feedbacks from db.
-// @id getfeed
-// @Summary is used to get al the feedbackss of a user.
+// dashboard godoc
+// @Description get user feedbacks from db.
+// @id dash
+// @Summary is used to get feedbackss of the user.
+// @Param Authorization header string true "jwt token"
 // @Param id query string true "target ID"
 // @Success 201 {string} string "Successful Login."
 // @Header 201 {string} string "Success"
 // @Failure 400 {string} string "Error ID."
 // @Failure default {string} string "An error has ocurred"
-// @Router /getfb [get]
+// @Router /dashboard [get]
 func GetFeed(c *gin.Context) {
 	feedSlice, err := db.GetFeedFromDb(IDUser)
 	if err != nil {

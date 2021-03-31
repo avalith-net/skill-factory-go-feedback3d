@@ -22,33 +22,29 @@ func GetUserByFullName(name, lastName string) ([]*models.ReturnUser, error) {
 	//Corregir
 	findOptions.SetLimit(20)
 
-	// filter := bson.D{
-	// 	{"$or",
-	// 		bson.A{
-	// 			bson.D{
-	// 				{"$or",
-	// 					bson.A{
-	// 						bson.D{{"name", bson.M{"$regex": `(?i)` + name}}},
-	// 						bson.D{{"lastname", bson.M{"$regex": `(?i)` + lastName}}},
-	// 					}},
-	// 			},
-	// 			bson.D{
-	// 				{"$or",
-	// 					bson.A{
-	// 						bson.D{{"name", bson.M{"$regex": `(?i)` + lastName}}},
-	// 						bson.D{{"lastname", bson.M{"$regex": `(?i)` + name}}},
-	// 					}},
-	// 			},
-	// 		},
-	// 	},
-	// }
-
-	filter := bson.M{
-		"$or": bson.A{
-			bson.M{"name": bson.M{"$regex": `(?i)` + name}},
-			bson.M{"lastname": bson.M{"$regex": `(?i)` + lastName}},
-			bson.M{"name": bson.M{"$regex": `(?i)` + lastName}},
-			bson.M{"lastname": bson.M{"$regex": `(?i)` + name}},
+	filter := bson.D{
+		{"$or",
+			bson.A{
+				bson.D{
+					{"$or",
+						bson.A{
+							bson.D{
+								{"name", bson.M{"$regex": `(?i)` + name}},
+								{"lastname", bson.M{"$regex": `(?i)` + lastName}}},
+							bson.D{
+								{"name", bson.M{"$regex": `(?i)` + lastName}},
+								{"lastname", bson.M{"$regex": `(?i)` + name}}},
+						}},
+				},
+				bson.D{
+					{"$or",
+						bson.A{
+							bson.D{{"lastname", bson.M{"$regex": `(?i)` + lastName}}},
+							bson.D{{"lastname", bson.M{"$regex": `(?i)` + name}}},
+							bson.D{{"name", bson.M{"$regex": `(?i)` + name}}},
+						}},
+				},
+			},
 		},
 	}
 

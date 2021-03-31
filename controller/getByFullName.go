@@ -26,6 +26,8 @@ func GetByFullName(c *gin.Context) {
 	var name, lastName string
 
 	switch arrLen {
+	case 1:
+		name, lastName = fullNameArray[0], fullNameArray[0]
 	case 2:
 		name = fullNameArray[0]
 		lastName = fullNameArray[1]

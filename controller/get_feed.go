@@ -10,7 +10,7 @@ import (
 // dashboard godoc
 // @Description get user feedbacks from db.
 // @id dash
-// @Summary is used to get feedbackss of the user.
+// @Summary is used to get feedbacks of the user.
 // @Param Authorization header string true "jwt token"
 // @Param id query string true "target ID"
 // @Success 201 {string} string "Successful Login."

@@ -12,7 +12,7 @@ func ValidateJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, _, _, err := controller.TokenProcess(c.GetHeader("Authorization"))
 		if err != nil {
-			c.String(http.StatusInternalServerError, "Token error.")
+			c.String(http.StatusBadRequest, "Token error.")
 			return
 		}
 		c.Next()

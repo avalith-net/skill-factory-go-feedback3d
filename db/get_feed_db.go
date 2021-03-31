@@ -10,7 +10,7 @@ import (
 )
 
 //GetFeedFromDb .
-func GetFeedFromDb(ID string) ([]models.Feedback, error) {
+func GetFeedFromDb(ID string, condition bool) ([]models.Feedback, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -19,11 +19,20 @@ func GetFeedFromDb(ID string) ([]models.Feedback, error) {
 
 	var feedSlice []models.Feedback
 
-	condicion := bson.M{
-		"receiver_id": ID,
+	var filter bson.M
+
+	//true for receiver and false for issuer
+	if condition {
+		filter = bson.M{
+			"receiver_id": ID,
+		}
+	} else {
+		filter = bson.M{
+			"issuer_id": ID,
+		}
 	}
 
-	cur, err := col.Find(ctx, condicion)
+	cur, err := col.Find(ctx, filter)
 	if err != nil {
 		err = errors.New("Error al buscar los elementos")
 	}

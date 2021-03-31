@@ -13,29 +13,38 @@ import (
 // @id banuser
 // @Summary is used to ban users.
 // @Param Authorization header string true "jwt token"
-// @Param email path string true "Email"
+// @Param id path string true "id"
 // @Success 201 {string} string "User banned."
 // @Header 201 {string} string "Status created"
 // @Failure 400 {string} string "Unauthorized"
 // @Failure 500 {string} string "An error has ocurred trying to ban the user."
 // @Failure default {string} string "An error has ocurred"
-// @Router /users/:email [post]
+// @Router /users/ban/{id} [patch]
 func BanUser(c *gin.Context) {
-	email := c.Param("email")
+	id := c.Param("id")
 
-	user, found, id := db.UserAlreadyExist(email)
-	if user.Enabled == false {
-		c.String(http.StatusBadRequest, "User already banned.")
+	if id == IDUser {
+		c.String(http.StatusInternalServerError, "Are you trying to ban yourself? (...)")
 		return
 	}
-	if !found {
+
+	user, err := db.GetUser(id)
+	if err != nil {
 		c.String(http.StatusBadRequest, "User does not exist.")
+		return
+	}
+	if user.Role == "admin" {
+		c.String(http.StatusBadRequest, "You're trying to ban an admin.")
+		return
+	}
+	if user.Enabled == false {
+		c.String(http.StatusBadRequest, "User already banned.")
 		return
 	}
 	var userEmpty models.User
 	userEmpty.Enabled = false
 
-	_, err := db.ModifyUser(userEmpty, id)
+	_, err = db.ModifyUser(userEmpty, id)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Error trying to modify the user")
 		return

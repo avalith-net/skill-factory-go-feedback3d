@@ -43,12 +43,12 @@ func SetRoutes() {
 			jwt.POST("/setProfilePic", controller.SetProfilePicture)
 			jwt.POST("/fbRequest", controller.RequestFeedback)
 			jwt.GET("/dashboard", controller.GetFeed)
-			jwt.GET("/search", controller.GetByFullName)
-			jwt.GET("/generalProfile", controller.GetGeneralProfile)
+			jwt.GET("/users/search/:name", controller.GetByFullName)
+			jwt.GET("/users/get/:id", controller.GetGeneralProfile)
 			admin := jwt.Group("/")
 			admin.Use(middleware.IsAdmin())
 			{
-				admin.PATCH("/users/:email", controller.BanUser)
+				admin.PATCH("/users/ban/:id", controller.BanUser)
 			}
 		}
 		endpoints.GET("/feedback", func(c *gin.Context) {

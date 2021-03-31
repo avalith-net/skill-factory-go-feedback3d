@@ -18,7 +18,7 @@ import (
 // @Failure default {string} string "An error has ocurred"
 // @Router /dashboard [get]
 func GetFeed(c *gin.Context) {
-	feedSlice, err := db.GetFeedFromDb(IDUser)
+	feedSlice, err := db.GetFeedFromDb(IDUser, true)
 	if err != nil {
 		c.String(http.StatusBadRequest, "Error"+err.Error())
 		return

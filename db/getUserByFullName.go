@@ -12,7 +12,7 @@ import (
 )
 
 //GetUserByFullName .
-func GetUserByFullName(name, lastName string) ([]*models.ReturnUser, error) {
+func GetUserByFullName(name, lastName string) ([]*models.SearchUser, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -75,19 +75,19 @@ func GetUserByFullName(name, lastName string) ([]*models.ReturnUser, error) {
 	return firstResult, nil
 }
 
-func customFind(col *mongo.Collection, ctx context.Context, filter primitive.D, findOptions *options.FindOptions) ([]*models.ReturnUser, error) {
+func customFind(col *mongo.Collection, ctx context.Context, filter primitive.D, findOptions *options.FindOptions) ([]*models.SearchUser, error) {
 	// Passing bson.D{{}} as the filter matches all documents in the collection
 	cur, err := col.Find(ctx, filter, findOptions)
 	if err != nil {
 		return nil, err
 	}
-	var results []*models.ReturnUser
+	var results []*models.SearchUser
 	// Finding multiple documents returns a cursor
 	// Iterating through the cursor allows us to decode documents one at a time
 	for cur.Next(ctx) {
 
 		// create a value into which the single document can be decoded
-		var user models.ReturnUser
+		var user models.SearchUser
 		err := cur.Decode(&user)
 		if err != nil {
 			return nil, err

@@ -51,6 +51,12 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusBadRequest, "User was not found.")
 		return
 	}
+	validUser, _ = db.GetUser(rID)
+	if validUser.Enabled == false {
+		c.String(http.StatusUnauthorized, "User not authorized.")
+		return
+	}
+
 	var fb models.Feedback
 	err = json.NewDecoder(c.Request.Body).Decode(&fb)
 	if err != nil {

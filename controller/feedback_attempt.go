@@ -53,7 +53,7 @@ func FeedbackTry(c *gin.Context) {
 	}
 	validUser, _ = db.GetUser(rID)
 	if validUser.Enabled == false {
-		c.String(http.StatusUnauthorized, "User not authorized.")
+		c.String(http.StatusUnauthorized, "User not authorized to receive feedbacks.")
 		return
 	}
 

@@ -35,7 +35,10 @@ func ModifyUser(u models.User, ID string) (bool, error) {
 		register["password"] = u.Password
 	}
 
-	register["enabled"] = u.Enabled
+	//Improve
+	if len(u.Name) == 0 && len(u.LastName) == 0 && len(u.ProfilePicture) == 0 && len(u.Password) == 0 {
+		register["enabled"] = u.Enabled
+	}
 
 	updtString := bson.M{
 		"$set": register,

@@ -11,7 +11,7 @@ import (
 // getGeneralProf godoc
 // @Description get string by id
 // @id getGeneralProf
-// @Summary is used to request a feedback to other user.
+// @Summary is used to get the profile of some user.
 // @Param id path string true "Account ID"
 // @Param Authorization header string true "jwt token"
 // @Produce json
@@ -51,13 +51,18 @@ func GetGeneralProfile(c *gin.Context) {
 	userGeneral.FbReceiver = len(receiver)
 
 	user, _ = db.GetUser(IDUser)
+
 	if user.Role == "admin" {
 		results, err := db.GetFeedFromDb(id, true)
 		if err != nil {
 			c.String(http.StatusInternalServerError, "Internal error.")
 			return
 		}
-		userGeneral.Metrics = results
+		var adminProfile models.AdminProfile
+		adminProfile.Profile = userGeneral
+		adminProfile.Metrics = results
+		c.JSON(http.StatusCreated, adminProfile)
+		return
 	}
 
 	c.JSON(http.StatusCreated, userGeneral)

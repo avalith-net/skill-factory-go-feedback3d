@@ -43,6 +43,7 @@ func SetRoutes() {
 			jwt.POST("/setProfilePic", controller.SetProfilePicture)
 			jwt.POST("/fbRequest", controller.RequestFeedback)
 			jwt.GET("/dashboard", controller.GetFeed)
+			jwt.GET("/selectedFeedback", controller.GetSelectedFeedback)
 			jwt.GET("/users/search/:name", controller.GetByFullName)
 			jwt.GET("/users/get/:id", controller.GetGeneralProfile)
 			admin := jwt.Group("/")

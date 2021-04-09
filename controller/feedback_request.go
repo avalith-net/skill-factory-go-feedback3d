@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/blotin1993/feedback-api/db"
+	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
 	"github.com/gin-gonic/gin"
 
-	services "github.com/blotin1993/feedback-api/services/email"
+	services "github.com/JoaoPaulo87/skill-factory-go-feedback3d/services/email"
 )
 
 // RequestFeedback godoc

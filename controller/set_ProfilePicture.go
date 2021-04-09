@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/blotin1993/feedback-api/db"
-	"github.com/blotin1993/feedback-api/models"
+	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
+	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
 	"github.com/gin-gonic/gin"
 )
 

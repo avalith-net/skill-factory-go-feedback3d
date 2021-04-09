@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/blotin1993/feedback-api/auth"
-	"github.com/blotin1993/feedback-api/db"
-	services "github.com/blotin1993/feedback-api/services/email"
+	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/auth"
+	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
+	services "github.com/JoaoPaulo87/skill-factory-go-feedback3d/services/email"
 	"github.com/gin-gonic/gin"
 )
 

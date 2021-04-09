@@ -3,8 +3,8 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/blotin1993/feedback-api/controller"
-	"github.com/blotin1993/feedback-api/db"
+	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/controller"
+	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
 	"github.com/gin-gonic/gin"
 )
 

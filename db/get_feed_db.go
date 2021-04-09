@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/blotin1993/feedback-api/models"
+	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
 	"go.mongodb.org/mongo-driver/bson"
 )
 

@@ -6,7 +6,7 @@ import (
 
 	"github.com/blotin1993/feedback-api/auth"
 	"github.com/blotin1993/feedback-api/db"
-	services "github.com/blotin1993/feedback-api/services/email"
+	"github.com/blotin1993/feedback-api/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,6 +34,7 @@ func RecoverPass(c *gin.Context) {
 	}
 
 	stringObjectID := (user.ID).Hex()
+
 	expirationTime := time.Now().Add(1 * time.Hour)
 	jwtKey, err := auth.GenerateJWT(user, expirationTime)
 

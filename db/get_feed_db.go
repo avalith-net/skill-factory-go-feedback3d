@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-//GetFeedFromDb .
+//GetFeedFromDb . Contion @param {true for receiver and false for issuer}
 func GetFeedFromDb(ID string, condition bool) ([]models.Feedback, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)

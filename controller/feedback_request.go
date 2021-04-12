@@ -7,7 +7,7 @@ import (
 	"github.com/blotin1993/feedback-api/db"
 	"github.com/gin-gonic/gin"
 
-	services "github.com/blotin1993/feedback-api/services/email"
+	"github.com/blotin1993/feedback-api/services"
 )
 
 // RequestFeedback godoc

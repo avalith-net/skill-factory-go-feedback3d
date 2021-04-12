@@ -7,7 +7,7 @@ import (
 
 	"github.com/blotin1993/feedback-api/db"
 	"github.com/blotin1993/feedback-api/models"
-	services "github.com/blotin1993/feedback-api/services/email"
+	"github.com/blotin1993/feedback-api/services"
 	"github.com/gin-gonic/gin"
 
 	"github.com/fatih/structs"
@@ -29,11 +29,6 @@ import (
 // @Router /feedback [post]
 func FeedbackTry(c *gin.Context) {
 
-	/* Métricas de Feedback:
-	Let´s work on this.
-	Reach the Goal.
-	Relevant Performance.
-	Master. */
 	validUser, _ := db.GetUser(IDUser)
 	if validUser.Enabled == false {
 		c.String(http.StatusUnauthorized, "User not authorized.")
@@ -51,12 +46,12 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusBadRequest, "User was not found.")
 		return
 	}
-	validUser, _ = db.GetUser(rID)
-	if validUser.Enabled == false {
+	if user.Enabled == false {
 		c.String(http.StatusUnauthorized, "User not authorized to receive feedbacks.")
 		return
 	}
 
+	//checkear con gin
 	var fb models.Feedback
 	err = json.NewDecoder(c.Request.Body).Decode(&fb)
 	if err != nil {
@@ -69,15 +64,23 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusBadRequest, "You must enter at least one complete area")
 		return
 	}
+	//-----------------------------------Format validation
 
-	if !validateMsgLength(1615, fb.Message) { //1615 xq toma saltos de pagina como caracteres.
-		c.String(http.StatusBadRequest, "Message cannot be longer than 1500 characters")
+	isValid, err := services.ValidateForm(fb)
+	if !isValid {
+		c.String(http.StatusBadRequest, "Invalid format: "+err.Error())
 		return
 	}
-	if !validateMsgLength(541, fb.TechArea.Message, fb.TeamArea.Message, fb.PerformanceArea.Message) { //40 xq toma saltos de página
-		c.String(http.StatusBadRequest, "Area Messages cannot be longer than 500 characters.")
+
+	// graphic stats
+	err = services.InitGraphic(fb, user)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
+	// persist graphic.
+	_, err = db.UpdateGraphic(user, rID)
+
 	//-----------------------------------
 
 	fb.IssuerID = IDUser
@@ -102,16 +105,11 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Database error.")
 		return
 	}
-	c.String(http.StatusCreated, "Success")
-}
 
-func validateMsgLength(maxLen int, Amsg ...string) bool {
-	for _, msg := range Amsg {
-		if len(msg) > maxLen {
-			return false
-		}
-	}
-	return true
+	// Add to graphic struct.
+	// rID receiver id
+
+	c.String(http.StatusCreated, "Success")
 }
 
 func hasZeroGroup(group ...interface{}) bool {

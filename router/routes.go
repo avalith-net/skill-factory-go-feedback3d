@@ -45,9 +45,7 @@ func SetRoutes() {
 			jwt.POST("/users/edit", controller.EditUser)
 			jwt.GET("/dashboard", controller.GetDashboard)
 			jwt.GET("/users/search/:name", controller.GetByFullName)
-			jwt.GET("/users/get/:id", controller.GetGeneralProfile, func(c *gin.Context) {
-				c.HTML(http.StatusOK, "user_profile.tmpl", gin.H{})
-			})
+			jwt.GET("/users/get/:id", controller.GetGeneralProfile)
 			admin := jwt.Group("/")
 			admin.Use(middleware.IsAdmin())
 			{

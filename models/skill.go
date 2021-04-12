@@ -1,8 +1,8 @@
 package models
 
 type Skill struct {
-	name string
-	area string
+	Name string
+	Area string
 	//from 1 to 10
-	level int
+	Level int
 }

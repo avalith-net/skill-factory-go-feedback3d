@@ -46,6 +46,8 @@ func SetRoutes() {
 			jwt.GET("/dashboard", controller.GetDashboard)
 			jwt.GET("/users/search/:name", controller.GetByFullName)
 			jwt.GET("/users/get/:id", controller.GetGeneralProfile)
+			jwt.POST("/changePassword", controller.ChangePassEmail)
+
 			admin := jwt.Group("/")
 			admin.Use(middleware.IsAdmin())
 			{
@@ -59,7 +61,6 @@ func SetRoutes() {
 			c.HTML(http.StatusOK, "change_pass.tmpl", gin.H{})
 		})
 		endpoints.POST("/recoverPass", controller.RecoverPass)
-		endpoints.POST("/changePassword", controller.ChangePassEmail)
 	}
 
 	//-----------------------------------------------------------------------------------------------

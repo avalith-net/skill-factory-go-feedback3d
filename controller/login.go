@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -26,11 +25,12 @@ import (
 func Login(c *gin.Context) {
 
 	var usu models.User
-	err := json.NewDecoder(c.Request.Body).Decode(&usu)
-	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+
+	if err := c.ShouldBindJSON(&usu); err != nil {
+		c.String(http.StatusBadRequest, "Check your form.")
 		return
 	}
+
 	//email validation
 	if len(usu.Email) == 0 {
 		c.String(http.StatusBadRequest, "Email needed.")

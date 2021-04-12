@@ -19,6 +19,7 @@ func GetFeedFromDb(ID string, condition bool) ([]models.Feedback, error) {
 
 	var feedSlice []models.Feedback
 
+	// TODO : Agregar filtro. Cant, etc.
 	var filter bson.M
 
 	//true for receiver and false for issuer

@@ -6,6 +6,6 @@ type GeneralProfile struct {
 	ProfilePicture string         `bson:"profilePicture" json:"profilePicture,omitempty"`
 	Role           string         `bson:"role" json:"role,omitempty"`
 	Graphic        []MetricsCount `bson:"graphic" json:"graphic,omitempty"`
-	FbIssuer       int            `bson:"FbIssuer" json:"FbIssuer,omitempty"`
-	FbReceiver     int            `bson:"FbReceived" json:"FbReceived,omitempty"`
+	FbIssuer       int            `bson:"FbIssuer" json:"FbIssuer"`
+	FbReceiver     int            `bson:"FbReceived" json:"FbReceived"`
 }

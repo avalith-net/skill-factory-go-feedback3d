@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -51,10 +50,9 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 
-	//checkear con gin
 	var fb models.Feedback
-	err = json.NewDecoder(c.Request.Body).Decode(&fb)
-	if err != nil {
+
+	if err := c.ShouldBindJSON(&fb); err != nil {
 		c.String(http.StatusBadRequest, "Check your form.")
 		return
 	}
@@ -105,9 +103,6 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Database error.")
 		return
 	}
-
-	// Add to graphic struct.
-	// rID receiver id
 
 	c.String(http.StatusCreated, "Success")
 }

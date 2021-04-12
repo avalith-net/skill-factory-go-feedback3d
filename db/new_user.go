@@ -20,6 +20,7 @@ func AddRegister(u models.User) (string, bool, error) {
 	u.Password, err = auth.PassEncrypt(u.Password)
 	u.Enabled = true
 	u.Role = "user"
+	u.Graphic = nil
 	result, err := col.InsertOne(ctx, u)
 	if err != nil {
 		return "", false, err

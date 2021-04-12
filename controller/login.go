@@ -54,5 +54,7 @@ func Login(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, resp)
 
+	//domain : Production and development. Add in .env file
+
 	c.SetCookie("token", jwtKey, int(expirationTime.Unix()), "/", "localhost", false, true)
 }

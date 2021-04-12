@@ -17,7 +17,7 @@ import (
 // @Failure 400 {string} string "Error ID."
 // @Failure default {string} string "An error has ocurred"
 // @Router /dashboard [get]
-func GetFeed(c *gin.Context) {
+func GetDashboard(c *gin.Context) {
 	feedSlice, err := db.GetFeedFromDb(IDUser, true)
 	if err != nil {
 		c.String(http.StatusBadRequest, "Error"+err.Error())

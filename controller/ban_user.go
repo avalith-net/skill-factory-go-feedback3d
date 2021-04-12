@@ -13,15 +13,15 @@ import (
 // @id banuser
 // @Summary is used to ban users.
 // @Param Authorization header string true "jwt token"
-// @Param id path string true "id"
+// @Param id query string true "id"
 // @Success 201 {string} string "User banned."
 // @Header 201 {string} string "Status created"
 // @Failure 400 {string} string "Unauthorized"
 // @Failure 500 {string} string "An error has ocurred trying to ban the user."
 // @Failure default {string} string "An error has ocurred"
-// @Router /users/ban/{id} [patch]
+// @Router /users [patch]
 func BanUser(c *gin.Context) {
-	id := c.Param("id")
+	id := c.Query("id")
 
 	if id == IDUser {
 		c.String(http.StatusInternalServerError, "Are you trying to ban yourself? (...)")

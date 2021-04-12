@@ -49,6 +49,7 @@ func GetGeneralProfile(c *gin.Context) {
 	userGeneral.ProfilePicture = user.ProfilePicture
 	userGeneral.FbIssuer = len(issuer)
 	userGeneral.FbReceiver = len(receiver)
+	userGeneral.Graphic = user.Graphic
 
 	user, _ = db.GetUser(IDUser)
 

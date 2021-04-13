@@ -46,10 +46,14 @@ func SetRoutes() {
 			jwt.GET("/selectedFeedback", controller.GetSelectedFeedback)
 			jwt.GET("/users/search/:name", controller.GetByFullName)
 			jwt.GET("/users/get/:id", controller.GetGeneralProfile)
+			jwt.PATCH("/users/report/:feed_id", controller.ReportFeed)
+			jwt.PATCH("/users/feedState/:is_approbed", controller.FeedbackState)
+
 			admin := jwt.Group("/")
 			admin.Use(middleware.IsAdmin())
 			{
 				admin.PATCH("/users/ban/:id", controller.BanUser)
+				admin.POST("/reportNotification", controller.ReportNotification)
 			}
 		}
 		endpoints.GET("/feedback", func(c *gin.Context) {

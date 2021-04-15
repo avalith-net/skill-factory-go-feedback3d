@@ -8,6 +8,7 @@ import (
 )
 
 func InitGraphic(fb models.Feedback, user models.ReturnUser) error {
+
 	// init map
 	var auxMap = map[string]int{
 		"Let´s Work On This":   0,
@@ -20,11 +21,12 @@ func InitGraphic(fb models.Feedback, user models.ReturnUser) error {
 	s := structs.New(fb)
 	// get values from s
 	for _, f := range s.Values() {
-		str := fmt.Sprintf("%v", f)
-		if str != "" {
-			auxMap[str]++
+		key := fmt.Sprintf("%v", f)
+		if key != "" {
+			auxMap[key]++
 		}
 	}
+	//If the graphic is empty, this will initialize it.
 	if len(user.Graphic) == 0 {
 		for k, v := range auxMap {
 			//init metrics count
@@ -32,11 +34,12 @@ func InitGraphic(fb models.Feedback, user models.ReturnUser) error {
 			user.Graphic = append(user.Graphic, mc)
 		}
 	} else {
-		//init graph
+		//update graph
 		for i, s := range user.Graphic {
 
 			//update map
 			if val, ok := auxMap[s.Metric]; ok {
+
 				user.Graphic[i].Count += val
 
 			}

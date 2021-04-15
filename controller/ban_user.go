@@ -23,6 +23,11 @@ import (
 func BanUser(c *gin.Context) {
 	id := c.Query("id")
 
+	if len(id) < 1 {
+		c.String(http.StatusBadRequest, "Must enter ID.")
+		return
+	}
+
 	if id == IDUser {
 		c.String(http.StatusInternalServerError, "Are you trying to ban yourself? (...)")
 		return

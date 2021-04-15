@@ -7,6 +7,7 @@ import (
 	_ "github.com/blotin1993/feedback-api/docs"
 	"github.com/blotin1993/feedback-api/middleware"
 	"github.com/gin-gonic/gin"
+	cors "github.com/rs/cors/wrapper/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
@@ -27,6 +28,8 @@ import (
 func SetRoutes() {
 	//set router
 	r := gin.Default()
+	r.Use(cors.Default())
+
 	r.LoadHTMLGlob("templates/*")
 
 	endpoints := r.Group("/")
@@ -42,7 +45,7 @@ func SetRoutes() {
 			jwt.POST("/feedback", controller.FeedbackTry)
 			jwt.POST("/setProfilePic", controller.SetProfilePicture)
 			jwt.POST("/fbRequest", controller.RequestFeedback)
-			jwt.POST("/users/edit", controller.EditUser)
+			jwt.PATCH("/users/edit", controller.EditUser)
 			jwt.GET("/dashboard", controller.GetDashboard)
 			jwt.GET("/users/search/:name", controller.GetByFullName)
 			jwt.GET("/users/get/:id", controller.GetGeneralProfile)

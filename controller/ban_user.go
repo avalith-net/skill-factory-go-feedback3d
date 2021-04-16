@@ -19,9 +19,9 @@ import (
 // @Failure 400 {string} string "Unauthorized"
 // @Failure 500 {string} string "An error has ocurred trying to ban the user."
 // @Failure default {string} string "An error has ocurred"
-// @Router /users [patch]
+// @Router /users/ban/{id} [patch]
 func BanUser(c *gin.Context) {
-	id := c.Query("id")
+	id := c.Param("id")
 
 	if len(id) < 1 {
 		c.String(http.StatusBadRequest, "Must enter ID.")

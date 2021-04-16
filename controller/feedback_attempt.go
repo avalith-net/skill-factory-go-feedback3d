@@ -40,7 +40,7 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 	user, err := db.GetUser(rID)
-	_, isFound, _ := db.UserAlreadyExist(user.Email)
+	_, isFound, _ := db.GetUserByEmail(user.Email)
 	if !isFound {
 		c.String(http.StatusBadRequest, "User was not found.")
 		return

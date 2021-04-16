@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
@@ -15,7 +14,6 @@ import (
 // @Description Get all the users with admin. rol from the db and send them a feedback report
 // @User get-struct-by-json
 // @Accept  json
-// @Param page_number query string true "Insert the page"
 // @Param feedID query string true "insert feedback ID here"
 // @Param Authorization header string true "Token"
 // @Success 200 {string} string "status ok"
@@ -24,14 +22,8 @@ import (
 // @Failure default {string} string "Error"
 // @Router /reportNotification [post]
 func ReportNotification(c *gin.Context) {
-	page := c.Query("page_number")
-	pageTemp, err := strconv.Atoi(page)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Page must be a number": err.Error()})
-		return
-	}
-	pag := int64(pageTemp)
-	admins, err := db.GetAllAdmins(pag)
+	//At the moment, report_feed is doing the same thing. Maybe we could delete this.
+	admins, err := db.GetAllAdmins()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"Coudn´t get the admins": err.Error()})
 		return

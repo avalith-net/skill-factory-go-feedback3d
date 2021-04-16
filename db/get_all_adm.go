@@ -11,7 +11,7 @@ import (
 )
 
 // It return a slice of all the users with role = "admin"
-func GetAllAdmins(page int64) ([]*models.User, error) {
+func GetAllAdmins() ([]*models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -23,6 +23,8 @@ func GetAllAdmins(page int64) ([]*models.User, error) {
 	condicion := bson.M{
 		"role": bson.M{"$eq": "admin"},
 	}
+
+	var page int64 = 1
 
 	findOptions := options.Find()
 	findOptions.SetSkip((page - 1) * 20)

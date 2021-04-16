@@ -47,13 +47,13 @@ func SetRoutes() {
 			jwt.GET("/users/search/:name", controller.GetByFullName)
 			jwt.GET("/users/get/:id", controller.GetGeneralProfile)
 			jwt.PATCH("/users/report/:feed_id", controller.ReportFeed)
-			jwt.PATCH("/users/feedState/:is_approbed", controller.FeedbackState)
+			jwt.POST("/reportNotification", controller.ReportNotification) //este va arriba, en el middleware de jwt.
 
 			admin := jwt.Group("/")
 			admin.Use(middleware.IsAdmin())
 			{
 				admin.PATCH("/users/ban/:id", controller.BanUser)
-				admin.POST("/reportNotification", controller.ReportNotification)
+				admin.PATCH("/users/feedState/:is_approbed", controller.FeedbackState) //pasarlo por el middleware por el adm. sino cualquiera podria aprobarlo.
 			}
 		}
 		endpoints.GET("/feedback", func(c *gin.Context) {

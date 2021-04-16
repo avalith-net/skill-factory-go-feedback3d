@@ -5,8 +5,10 @@ package controller
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
+	services "github.com/JoaoPaulo87/skill-factory-go-feedback3d/services/email"
 	"github.com/gin-gonic/gin"
 )
 
@@ -49,15 +51,42 @@ func FeedbackState(c *gin.Context) {
 
 	state, _ := strconv.ParseBool(feedState)
 
-	isApprobedState, err := db.UpdateFeedbackState(feed, feedID, state)
+	isApprobedState, err := db.UpdateFeedbackState(feedID, state)
 	if err != nil || !isApprobedState {
 		c.String(http.StatusBadRequest, "Database error "+err.Error())
 		return
 	}
 
+	feedSender, err := db.GetUser(feed.IssuerID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "The receiver user does not exists. Error "+err.Error())
+		return
+	}
+
 	if state {
+		bodyString := "<b><i>Hi " + feedSender.Name + " " + feedSender.LastName + "!</i></b>\n" +
+			"We check the report you send with the admins and everything looks ok. If you think we commited a mistake please text us!\n<br>" +
+			"We will glad to help you. Our contact: <b><i>feedbackapiadm@gmail.com</i></b>\n<br>" +
+			"Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format("2006.01.02 15:04:05")
+
+		if !services.SendEmail(feedSender.Email, "Feedback approbed.", bodyString) {
+			c.String(http.StatusBadRequest, "An error has ocurred sending the email "+err.Error())
+			return
+		}
 		c.String(http.StatusCreated, "Feedback state created. Feed approbed")
 	} else {
+
+		bodyString := "<b><i>Hi " + feedSender.Name + " " + feedSender.LastName + "!</i></b>\n" +
+			"We check the report you send with the admins and we are very sorry this situation. This feedback was disapprobed according to our politics!\n\n<br>" +
+			feedSender.Name + " you're very important to us! If you think we commited a mistake or anything we can help, please text us!\n<br>" +
+			"We will glad to help you. Our contact: <b><i>feedbackapiadm@gmail.com</i></b>\n<br>" +
+			"Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format("2006.01.02 15:04:05")
+
+		if !services.SendEmail(feedSender.Email, "Feedback disapprobed.", bodyString) {
+			c.String(http.StatusBadRequest, "An error has ocurred sending the email "+err.Error())
+			return
+		}
+
 		deleteResponse, _ := db.DeleteFeedback(feedID)
 
 		c.JSON(http.StatusCreated, gin.H{"Feedback state created. Feed was disapprobed and deleted. ": deleteResponse})

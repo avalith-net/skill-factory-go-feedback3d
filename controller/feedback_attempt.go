@@ -35,7 +35,7 @@ func FeedbackTry(c *gin.Context) {
 	Relevant Performance.
 	Master. */
 	validUser, _ := db.GetUser(IDUser)
-	if validUser.Enabled == false {
+	if !validUser.Enabled {
 		c.String(http.StatusUnauthorized, "User not authorized.")
 		return
 	}
@@ -52,7 +52,7 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 	validUser, _ = db.GetUser(rID)
-	if validUser.Enabled == false {
+	if !validUser.Enabled {
 		c.String(http.StatusUnauthorized, "User not authorized to receive feedbacks.")
 		return
 	}
@@ -83,6 +83,8 @@ func FeedbackTry(c *gin.Context) {
 	fb.IssuerID = IDUser
 	fb.ReceiverID = rID
 	fb.Date = time.Now()
+	fb.IsApprobed = false
+	fb.IsReported = false
 
 	// Send email notification
 
@@ -95,13 +97,36 @@ func FeedbackTry(c *gin.Context) {
 
 	if err != nil {
 		c.String(http.StatusInternalServerError, "An error has ocurred. Try again later "+err.Error())
-		// c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	if status == false {
+
+	if !status {
 		c.String(http.StatusInternalServerError, "Database error.")
 		return
 	}
+
+	// // We search for the feedback just created inside the db so we can get it back with the given objID.
+	// feed, err := db.GetSelectedFeedBack(feedbackID)
+	// if err != nil {
+	// 	c.String(http.StatusBadRequest, "The feedback with given ID does not exists.")
+	// 	return
+	// }
+
+	//var modifiedUser models.User
+
+	// Feedback is added to the FeedbackStatus of the target user, so when you are looking at their profile,
+	// all pending feedbacks are displayed. This is connected in get_generalProfile
+	//modifiedUser.UsersAskedFeed = append(modifiedUser.UsersAskedFeed, feed)
+
+	//The last step is add the feedback to the slice.
+	// isFeedInserted, err := db.ModifyUser(modifiedUser, rID)
+	// if err != nil {
+	// 	c.String(http.StatusBadRequest, "Cannot modify the feedback status on this user")
+	// 	return
+	// }
+
+	// fmt.Println(isFeedInserted)
+
 	c.String(http.StatusCreated, "Success")
 }
 

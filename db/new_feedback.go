@@ -20,5 +20,5 @@ func AddFeedback(u models.Feedback) (string, bool, error) {
 		return "", false, err
 	}
 	ObjID, _ := result.InsertedID.(primitive.ObjectID)
-	return ObjID.String(), true, nil
+	return ObjID.Hex(), true, nil
 }

@@ -18,7 +18,6 @@ type Feedback struct {
 	Message         string             `bson:"message,omitempty" json:"message"`
 	IsApprobed      bool               `bson:"is_approbed" json:"is_approbed"`
 	IsReported      bool               `bson:"is_reported" json:"is_reported"`
-	//FeedbackStatus  FeedbackStatus     `bson:"feedback_status,omitempty,inline" json:"feedback_status,omitempty"`
 }
 
 //TechArea .
@@ -43,9 +42,3 @@ type PerformanceArea struct {
 	WorkQuality    string `bson:"workQuality,omitempty" json:"workquality"`
 	ClientOriented string `bson:"clientOriented,omitempty" json:"clientoriented"`
 }
-
-// type FeedbackStatus struct {
-// 	OnReview    string `bson:"onreview,omitempty" json:"onreview"`
-// 	Approbed    string `bson:"approbed,omitempty" json:"approbed"`
-// 	Disapprobed string `bson:"disapprobed,omitempty" json:"disapprobed"`
-// }

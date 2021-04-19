@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
 	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 
 	services "github.com/JoaoPaulo87/skill-factory-go-feedback3d/services/email"
 )
@@ -52,14 +54,69 @@ func RequestFeedback(c *gin.Context) {
 		return
 	}
 
+	// Como yo, la persona logeada, soy el que pido feedback, le tengo que pasar mis datos y
+	//agregarselos al otro usuario en el userAsksfeed. En feedrequest tengo que agregarme los
+	//datos del otro usuario a mi. Y luego agregar ambos con modify al usuario.
+
+	// PASO A SEGUIR: Una vez que lo creo, ANTES DE AGREGARLO AL USUARIO, lo que voy a hacer es
+	//con feedRequestedID busco el objeto y ese es el que tengo que agregar al Usuario para
+	//que se me agrege con el fking ObjId y asi poder borrarlo!!!!
+	var feedRequested models.FeedbacksRequested
+
+	feedRequested.RequestedUserID = id
+	feedRequested.UserLoggedID = IDUser
+	feedRequested.RequestedUserName = user.Name
+	feedRequested.RequestedUserLastName = user.LastName
+	feedRequested.SentDate = time.Now()
+
+	feedRequestedID, isRequestCreated, err := db.AddFeedbackRequested(feedRequested)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Cannot create a feedback request to target user in feedback request.")
+		return
+	}
+	if !isRequestCreated {
+		c.String(http.StatusBadRequest, "Something went wrong trying create a request to target user in feedback request.")
+		return
+	}
+
+	fmt.Println(feedRequestedID)
+	// feedRequestedObj, err := db.GetSelectedFeedBackRequestObj(feedRequestedID)
+	// if err != nil {
+	// 	c.String(http.StatusBadRequest, "Cannot get objID of feedbackRequest in feedback request.")
+	// 	return
+	// }
+
+	var userAskingFeed models.UsersAskedFeed
+
+	userAskingFeed.UserWhoAskFeedID = IDUser
+	userAskingFeed.UserAskedForFeedID = id
+	userAskingFeed.NameWhoAskFeed = loggedUser.Name
+	userAskingFeed.LastNameWhoAskFeed = loggedUser.LastName
+	userAskingFeed.SentDate = time.Now()
+
+	userAskingFeedID, isRequestCreated, err := db.AddUsersAsksFeed(userAskingFeed)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Cannot create a userAsksFeed instance in feedback request.")
+		return
+	}
+	if !isRequestCreated {
+		c.String(http.StatusBadRequest, "Something went wrong trying create a userAsksFeed instance in feedback request. ID: "+userAskingFeedID)
+		return
+	}
+
+	//Ahora que tengo el ID del userAskingFeedID, tengo que persistir el userAskingFeedObj en el usuario. Todo esto para luego en feedback_attempt buscar el obj con el ID
+	// que esta relacionado al usuario y poder borrarlo tambien, porque ahora borra el obj de la bd pero no se actualiza en el usuario ese borrado.
+	// userAskingFeedObj, err := db.GetUserAskingForFeedBackObj(userAskingFeedID)
+	// if err != nil {
+	// 	c.String(http.StatusBadRequest, "Cannot get objID of userAskingFeed in feedback request.")
+	// 	return
+	// }
+
 	var modifiedLoggedUser models.User
 
-	modifiedLoggedUser.Enabled = true
-	modifiedLoggedUser.FeedbacksRequested = loggedUser.FeedbacksRequested
-	modifiedLoggedUser.UsersAskedFeed = loggedUser.UsersAskedFeed
+	copier.Copy(&modifiedLoggedUser, &loggedUser)
 
-	fbRequest := "Feedback requested to " + user.Name
-	modifiedLoggedUser.FeedbacksRequested = append(modifiedLoggedUser.FeedbacksRequested, fbRequest)
+	//modifiedLoggedUser.FeedbackStatus.FeedbacksRequested = feedRequestedObj
 
 	isLoggedUserModified, err := db.ModifyUser(modifiedLoggedUser, IDUser)
 	if err != nil {
@@ -74,18 +131,13 @@ func RequestFeedback(c *gin.Context) {
 
 	var modifiedTargetUser models.User
 
-	fbAsked := loggedUser.Name + " asks you for feedback. With date: " + time.Now().Format(timeFormat)
-
-	modifiedTargetUser.Enabled = true
-	modifiedTargetUser.UsersAskedFeed = user.UsersAskedFeed
-	modifiedTargetUser.FeedbacksRequested = user.FeedbacksRequested
+	copier.Copy(&modifiedTargetUser, &user)
 
 	if !modifiedTargetUser.Enabled {
 		c.String(http.StatusBadRequest, "Cannot ask feedback, the logged user is banned")
 		return
 	}
-
-	modifiedTargetUser.UsersAskedFeed = append(modifiedTargetUser.UsersAskedFeed, fbAsked)
+	//modifiedTargetUser.FeedbackStatus.UsersAskedFeed = userAskingFeedObj
 
 	isTargetUserModified, err := db.ModifyUser(modifiedTargetUser, id)
 	if err != nil {

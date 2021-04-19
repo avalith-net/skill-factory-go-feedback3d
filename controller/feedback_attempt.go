@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
 	services "github.com/JoaoPaulo87/skill-factory-go-feedback3d/services/email"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 
 	"github.com/fatih/structs"
 )
@@ -34,8 +36,8 @@ func FeedbackTry(c *gin.Context) {
 	Reach the Goal.
 	Relevant Performance.
 	Master. */
-	validUser, _ := db.GetUser(IDUser)
-	if !validUser.Enabled {
+	loggedUser, _ := db.GetUser(IDUser)
+	if !loggedUser.Enabled {
 		c.String(http.StatusUnauthorized, "User not authorized.")
 		return
 	}
@@ -51,7 +53,7 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusBadRequest, "User was not found.")
 		return
 	}
-	validUser, _ = db.GetUser(rID)
+	validUser, _ := db.GetUser(rID)
 	if !validUser.Enabled {
 		c.String(http.StatusUnauthorized, "User not authorized to receive feedbacks.")
 		return
@@ -93,7 +95,7 @@ func FeedbackTry(c *gin.Context) {
 
 	//------------------------------
 
-	_, status, err := db.AddFeedback(fb)
+	feedID, status, err := db.AddFeedback(fb)
 
 	if err != nil {
 		c.String(http.StatusInternalServerError, "An error has ocurred. Try again later "+err.Error())
@@ -105,27 +107,89 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 
-	// // We search for the feedback just created inside the db so we can get it back with the given objID.
-	// feed, err := db.GetSelectedFeedBack(feedbackID)
+	feedRequestedID, err := db.GetFeedBackRequestedID(IDUser, rID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Error trying to get feedbackRequest ID with givens users IDs. ")
+		return
+	}
+
+	userAskingFeedID, err := db.GetUsersAskedFeedbackID(IDUser, rID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Error trying to get userAsksFeed ID with givens users IDs. ")
+		return
+	}
+
+	//Tengo que obtener los id, tener los obj para despues poder borrarlos y persistirlo en el usuario.
+
+	_, isDeleted := db.DeleteFeedbackRequested(feedRequestedID)
+	if !isDeleted {
+		c.String(http.StatusBadRequest, "Error trying to delete requested feed with given ID. ")
+		return
+	}
+
+	deletetionResult, isDeleted := db.DeleteUserAskFeedback(userAskingFeedID)
+	if !isDeleted {
+		c.String(http.StatusBadRequest, "Error trying to delete asked request with given ID. ")
+		return
+	}
+
+	fmt.Println(deletetionResult)
+
+	var modifiedLoggedUser models.User
+
+	copier.Copy(&modifiedLoggedUser, &loggedUser)
+
+	modifiedLoggedUser.FeedbackStatus.FeedbacksSended = append(modifiedLoggedUser.FeedbackStatus.FeedbacksSended, feedID)
+
+	// feedRequestedObj, err := db.GetSelectedFeedBackRequestObj(feedRequestedID)
 	// if err != nil {
-	// 	c.String(http.StatusBadRequest, "The feedback with given ID does not exists.")
+	// 	c.String(http.StatusBadRequest, "Cannot get objID of feedbackRequest in feedback request.")
 	// 	return
 	// }
 
-	//var modifiedUser models.User
+	// fmt.Println(feedRequestedObj)
 
-	// Feedback is added to the FeedbackStatus of the target user, so when you are looking at their profile,
-	// all pending feedbacks are displayed. This is connected in get_generalProfile
-	//modifiedUser.UsersAskedFeed = append(modifiedUser.UsersAskedFeed, feed)
+	//Tengo que crear 2 funciones. Una para que me traiga el obj de fbr y otra
+	//para que me traiga el obj uaf. Cuando los traiga, los tengo que poner en
+	//modifiedLoggedUser, cada una en su respectivo campo. Asi se me actualiza.
+	//El problema es que ya los borre los objetos, por lo que voy a tener que
+	//hacer otro feedback_request a un user y otro fb_attempt
 
-	//The last step is add the feedback to the slice.
-	// isFeedInserted, err := db.ModifyUser(modifiedUser, rID)
+	isLoggedUserModified, err := db.ModifyUser(modifiedLoggedUser, IDUser)
+	if !isLoggedUserModified {
+		c.String(http.StatusBadRequest, "Fail on changing the logged user. ")
+		return
+	}
+	if err != nil {
+		c.String(http.StatusBadRequest, "Error trying to modified logged user. ")
+		return
+	}
+
+	//Ahora tengo que borrar el obj de users_asks_feed del target_id, o sea, user.
+
+	var modifiedTargetUser models.User
+
+	copier.Copy(&modifiedTargetUser, &user)
+
+	// askingForFeedBackObj, err := db.GetUserAskingForFeedBackObj(userAskingFeedID)
 	// if err != nil {
-	// 	c.String(http.StatusBadRequest, "Cannot modify the feedback status on this user")
+	// 	c.String(http.StatusBadRequest, "Cannot get objID of userAskingFeed in feedback request.")
 	// 	return
 	// }
 
-	// fmt.Println(isFeedInserted)
+	// fmt.Println("Imprimiendo askingForFeedBackObj.ID.Hex()")
+	// fmt.Println(askingForFeedBackObj.ID.Hex())
+
+	isTargetUserModified, err := db.ModifyUser(modifiedTargetUser, rID)
+	if !isTargetUserModified {
+		c.String(http.StatusBadRequest, "Fail on changing the logged user. ")
+		return
+	}
+	if err != nil {
+		c.String(http.StatusBadRequest, "Error trying to modified logged user. ")
+		return
+	}
+	//----------------------------------------------------------------------------------------------------
 
 	c.String(http.StatusCreated, "Success")
 }

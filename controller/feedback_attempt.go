@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -78,7 +77,6 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 	// persist graphic.
-	fmt.Println(user.Graphic)
 	_, err = db.UpdateGraphic(user, rID)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())

@@ -12,7 +12,7 @@ type User struct {
 	Email          string             `bson:"email" json:"email" validate:"required,email"`
 	Password       string             `bson:"password" json:"password,omitempty"`
 	ProfilePicture string             `bson:"profilePicture" json:"profilePicture,omitempty"`
-	Graphic        []MetricsCount     `bson:"graphic" json:"graphic,omitempty"`
+	Graphic        Graphic            `bson:"graphic" json:"graphic,omitempty"`
 	Role           string             `bson:"role" json:"role"`
 	Enabled        bool               `bson:"enabled" json:"enabled,omitempty"`
 }

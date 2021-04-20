@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -71,14 +72,18 @@ func FeedbackTry(c *gin.Context) {
 	}
 
 	// graphic stats
-	err = services.InitGraphic(fb, user)
+	user.Graphic, err = services.InitGraphic(fb, user)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 	// persist graphic.
+	fmt.Println(user.Graphic)
 	_, err = db.UpdateGraphic(user, rID)
-
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
 	//-----------------------------------
 
 	fb.IssuerID = IDUser

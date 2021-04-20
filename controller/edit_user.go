@@ -3,9 +3,9 @@ package controller
 import (
 	"net/http"
 
-	"github.com/blotin1993/feedback-api/db"
-	"github.com/blotin1993/feedback-api/models"
-	"github.com/blotin1993/feedback-api/services"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/services"
 	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
 )

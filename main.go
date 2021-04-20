@@ -5,8 +5,8 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 
-	"github.com/blotin1993/feedback-api/db"
-	"github.com/blotin1993/feedback-api/router"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/router"
 )
 
 func main() {

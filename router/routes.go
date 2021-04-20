@@ -3,9 +3,9 @@ package router
 import (
 	"net/http"
 
-	"github.com/blotin1993/feedback-api/controller"
-	_ "github.com/blotin1993/feedback-api/docs"
-	"github.com/blotin1993/feedback-api/middleware"
+	"github.com/avalith-net/skill-factory-go-feedback3d/controller"
+	_ "github.com/avalith-net/skill-factory-go-feedback3d/docs"
+	"github.com/avalith-net/skill-factory-go-feedback3d/middleware"
 	"github.com/gin-gonic/gin"
 	cors "github.com/rs/cors/wrapper/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"

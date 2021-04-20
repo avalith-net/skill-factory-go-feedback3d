@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/blotin1993/feedback-api/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"github.com/fatih/structs"
 	"github.com/mitchellh/mapstructure"
 )

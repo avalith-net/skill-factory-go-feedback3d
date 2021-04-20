@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/blotin1993/feedback-api/auth"
-	"github.com/blotin1993/feedback-api/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/auth"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

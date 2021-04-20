@@ -1,4 +1,4 @@
-module github.com/blotin1993/feedback-api
+module github.com/avalith-net/skill-factory-go-feedback3d
 
 go 1.16
 

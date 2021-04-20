@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
 	services "github.com/JoaoPaulo87/skill-factory-go-feedback3d/services/email"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 
 	"github.com/fatih/structs"
 )
@@ -34,8 +36,8 @@ func FeedbackTry(c *gin.Context) {
 	Reach the Goal.
 	Relevant Performance.
 	Master. */
-	validUser, _ := db.GetUser(IDUser)
-	if validUser.Enabled == false {
+	loggedUser, _ := db.GetUser(IDUser)
+	if !loggedUser.Enabled {
 		c.String(http.StatusUnauthorized, "User not authorized.")
 		return
 	}
@@ -51,8 +53,8 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusBadRequest, "User was not found.")
 		return
 	}
-	validUser, _ = db.GetUser(rID)
-	if validUser.Enabled == false {
+	validUser, _ := db.GetUser(rID)
+	if !validUser.Enabled {
 		c.String(http.StatusUnauthorized, "User not authorized to receive feedbacks.")
 		return
 	}
@@ -83,6 +85,8 @@ func FeedbackTry(c *gin.Context) {
 	fb.IssuerID = IDUser
 	fb.ReceiverID = rID
 	fb.Date = time.Now()
+	fb.IsApprobed = false
+	fb.IsReported = false
 
 	// Send email notification
 
@@ -91,17 +95,62 @@ func FeedbackTry(c *gin.Context) {
 
 	//------------------------------
 
-	_, status, err := db.AddFeedback(fb)
+	feedID, status, err := db.AddFeedback(fb)
 
 	if err != nil {
 		c.String(http.StatusInternalServerError, "An error has ocurred. Try again later "+err.Error())
-		// c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	if status == false {
+
+	if !status {
 		c.String(http.StatusInternalServerError, "Database error.")
 		return
 	}
+
+	feedRequestedID, err := db.GetFeedBackRequestedID(IDUser, rID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Error trying to get feedbackRequest ID with givens users IDs. ")
+		return
+	}
+
+	userAskingFeedID, err := db.GetUsersAskedFeedbackID(IDUser, rID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Error trying to get userAsksFeed ID with givens users IDs. ")
+		return
+	}
+
+	_, isDeleted := db.DeleteFeedbackRequested(feedRequestedID)
+	if !isDeleted {
+		c.String(http.StatusBadRequest, "Error trying to delete requested feed with given ID. ")
+		return
+	}
+
+	deletetionResult, isDeleted := db.DeleteUserAskFeedback(userAskingFeedID)
+	if !isDeleted {
+		c.String(http.StatusBadRequest, "Error trying to delete asked request with given ID. ")
+		return
+	}
+
+	fmt.Println(deletetionResult)
+
+	var modifiedLoggedUser models.User
+
+	copier.Copy(&modifiedLoggedUser, &loggedUser)
+
+	modifiedLoggedUser.FeedbackStatus.FeedbacksSended = append(modifiedLoggedUser.FeedbackStatus.FeedbacksSended, feedID)
+
+	isLoggedUserModified, err := db.ModifyUser(modifiedLoggedUser, IDUser)
+	if !isLoggedUserModified {
+		c.String(http.StatusBadRequest, "Fail on changing the logged user. ")
+		return
+	}
+	if err != nil {
+		c.String(http.StatusBadRequest, "Error trying to modified logged user. ")
+		return
+	}
+
+	//----------------------------------------------------------------------------------------------------
+
 	c.String(http.StatusCreated, "Success")
 }
 

@@ -8,14 +8,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-//AddFeedback is used to store feedbacks into the db.
-func AddFeedback(u models.Feedback) (string, bool, error) {
+func AddUsersAsksFeed(uaf models.UsersAskedFeed) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database("feedback-db")
-	col := db.Collection("feedbacks")
-	result, err := col.InsertOne(ctx, u)
+	col := db.Collection("users_asks_feedback")
+	result, err := col.InsertOne(ctx, uaf)
 	if err != nil {
 		return "", false, err
 	}

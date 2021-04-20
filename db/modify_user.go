@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/auth"
@@ -35,6 +36,8 @@ func ModifyUser(u models.User, ID string) (bool, error) {
 		register["password"] = u.Password
 	}
 
+	register["feedbackstatus"] = u.FeedbackStatus
+
 	//Improve
 	if len(u.Name) == 0 && len(u.LastName) == 0 && len(u.ProfilePicture) == 0 && len(u.Password) == 0 {
 		register["enabled"] = u.Enabled
@@ -43,6 +46,8 @@ func ModifyUser(u models.User, ID string) (bool, error) {
 	updtString := bson.M{
 		"$set": register,
 	}
+
+	fmt.Println()
 
 	objID, _ := primitive.ObjectIDFromHex(ID)
 

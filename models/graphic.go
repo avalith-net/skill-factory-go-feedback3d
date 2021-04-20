@@ -22,19 +22,3 @@ type Custom struct {
 	Count int
 }
 
-type GraphicRender struct {
-	Tech struct {
-		TechKnowledge int
-		BestPractices int
-		CodingStyle   int
-	}
-	Team struct {
-		TeamPlayer    int
-		Commited      int
-		Communication int
-	}
-	Perfo struct {
-		WorkQuality    int
-		ClientOriented int
-	}
-}

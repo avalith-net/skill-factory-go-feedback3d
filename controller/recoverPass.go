@@ -27,7 +27,7 @@ func RecoverPass(c *gin.Context) {
 		c.String(http.StatusBadRequest, "must complete email form")
 		return
 	}
-	user, mailExist, _ := db.UserAlreadyExist(email)
+	user, mailExist, _ := db.GetUserByEmail(email)
 	if !mailExist {
 		c.String(http.StatusBadRequest, "Wrong mail.")
 		return

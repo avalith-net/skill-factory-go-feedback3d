@@ -39,7 +39,7 @@ func SignUp(c *gin.Context) {
 		c.String(http.StatusBadRequest, "Your password must be at least 6 characters long.")
 		return
 	}
-	_, encontrado, _ := db.UserAlreadyExist(t.Email)
+	_, encontrado, _ := db.GetUserByEmail(t.Email)
 	if encontrado == true {
 		c.String(http.StatusBadRequest, "Email already registered.")
 		return

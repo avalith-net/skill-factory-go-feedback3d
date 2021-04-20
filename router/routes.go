@@ -54,7 +54,7 @@ func SetRoutes() {
 			admin := jwt.Group("/")
 			admin.Use(middleware.IsAdmin())
 			{
-				admin.PATCH("/users", controller.BanUser)
+				admin.PATCH("/users/ban/:id", controller.BanUser)
 			}
 		}
 		endpoints.GET("/feedback", func(c *gin.Context) {

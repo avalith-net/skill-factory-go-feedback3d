@@ -40,7 +40,7 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 	user, err := db.GetUser(rID)
-	_, isFound, _ := db.UserAlreadyExist(user.Email)
+	_, isFound, _ := db.GetUserByEmail(user.Email)
 	if !isFound {
 		c.String(http.StatusBadRequest, "User was not found.")
 		return
@@ -71,14 +71,17 @@ func FeedbackTry(c *gin.Context) {
 	}
 
 	// graphic stats
-	err = services.InitGraphic(fb, user)
+	user.Graphic, err = services.InitGraphic(fb, user)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 	// persist graphic.
 	_, err = db.UpdateGraphic(user, rID)
-
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
 	//-----------------------------------
 
 	fb.IssuerID = IDUser

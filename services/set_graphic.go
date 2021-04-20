@@ -1,49 +1,58 @@
 package services
 
 import (
-	"fmt"
-
 	"github.com/blotin1993/feedback-api/models"
 	"github.com/fatih/structs"
+	"github.com/mitchellh/mapstructure"
 )
 
-func InitGraphic(fb models.Feedback, user models.ReturnUser) error {
+func InitGraphic(fb models.Feedback, user models.ReturnUser) (models.Graphic, error) {
 
-	// init map
-	var auxMap = map[string]int{
-		"Let´s Work On This":   0,
-		"Reach The Goal":       0,
-		"Relevant Performance": 0,
-		"Master":               0,
-	}
+	graphicAreaMaps := []map[string]interface{}{structs.Map(user.Graphic.Tech), structs.Map(user.Graphic.Team), structs.Map(user.Graphic.Perfo)}
+	graphicPointers := []interface{}{&user.Graphic.Tech, &user.Graphic.Team, &user.Graphic.Perfo}
+	areas := []*structs.Struct{structs.New(fb.TechArea), structs.New(fb.TeamArea), structs.New(fb.PerformanceArea)}
 
-	//create a structs.struct from fb to get its values.
-	s := structs.New(fb)
-	// get values from s
-	for _, f := range s.Values() {
-		key := fmt.Sprintf("%v", f)
-		if key != "" {
-			auxMap[key]++
-		}
-	}
-	//If the graphic is empty, this will initialize it.
-	if len(user.Graphic) == 0 {
-		for k, v := range auxMap {
-			//init metrics count
-			mc := models.MetricsCount{Metric: k, Count: v}
-			user.Graphic = append(user.Graphic, mc)
-		}
-	} else {
-		//update graph
-		for i, s := range user.Graphic {
+	for i, area := range areas {
 
-			//update map
-			if val, ok := auxMap[s.Metric]; ok {
+		graphicAreaMap := graphicAreaMaps[i]
 
-				user.Graphic[i].Count += val
+		for _, fieldName := range area.Names() {
+			field := area.Field(fieldName)
 
+			var num int
+			//-------------------------------------
+			switch field.Value().(string) {
+			case "Let´s Work On This":
+				num = 25
+			case "Reach The Goal":
+				num = 50
+			case "Relevant Performance":
+				num = 75
+			case "Master":
+				num = 100
+			default:
+				num = 0
 			}
+			var custom models.Custom
+			err := mapstructure.Decode(graphicAreaMap[fieldName], &custom)
+			if err != nil {
+				return models.Graphic{}, err
+			}
+			if num == 0 {
+				custom.Count += 0
+			} else {
+				custom.Count++
+			}
+			custom.Value += num
+			graphicAreaMap[fieldName] = custom
+
 		}
+		err := mapstructure.Decode(graphicAreaMap, graphicPointers[i])
+		if err != nil {
+			return models.Graphic{}, err
+		}
+
 	}
-	return nil
+
+	return user.Graphic, nil
 }

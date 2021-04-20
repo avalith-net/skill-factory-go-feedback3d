@@ -42,7 +42,7 @@ func BanUser(c *gin.Context) {
 		c.String(http.StatusBadRequest, "You're trying to ban an admin.")
 		return
 	}
-	if user.Enabled == false {
+	if !user.Enabled {
 		c.String(http.StatusBadRequest, "User already banned.")
 		return
 	}

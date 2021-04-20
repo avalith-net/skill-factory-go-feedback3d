@@ -30,25 +30,31 @@ func GetGeneralProfile(c *gin.Context) {
 		return
 	}
 
-	receiver, err := db.GetFeedFromDb(id, true)
-	issuer, err2 := db.GetFeedFromDb(id, false)
-
-	if err != nil || err2 != nil {
-		c.String(http.StatusInternalServerError, "Internal error.")
-		return
-	}
-
 	user, err := db.GetUser(id)
 	if err != nil {
 		c.String(http.StatusBadRequest, "User does not exist.")
 		return
 	}
 
+	//Getting all the feedRequestedObjs of the logged user.
+	allFeedRequested, err := db.GetAllFeedRequested(id)
+	if err != nil {
+		c.String(http.StatusBadRequest, "There's no feedRequested objects.")
+		return
+	}
+
+	allUsersWhoAskedForFeed, err := db.GetAllUsersAskingForFeed(id)
+	if err != nil {
+		c.String(http.StatusBadRequest, "There's no UsersAsksFeed objects.")
+		return
+	}
+
 	var userGeneral models.GeneralProfile
 	userGeneral.CompleteName = user.Name + " " + user.LastName
+	userGeneral.FeedbacksRequested = len(allFeedRequested)
+	userGeneral.FeedbackAskedForUsers = len(allUsersWhoAskedForFeed)
+	userGeneral.FeedbackSent = len(user.FeedbackStatus.FeedbacksSended)
 	userGeneral.ProfilePicture = user.ProfilePicture
-	userGeneral.FbIssuer = len(issuer)
-	userGeneral.FbReceiver = len(receiver)
 	userGeneral.Graphic = user.Graphic
 
 	user, _ = db.GetUser(IDUser)

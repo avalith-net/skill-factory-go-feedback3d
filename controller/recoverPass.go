@@ -6,7 +6,7 @@ import (
 
 	"github.com/avalith-net/skill-factory-go-feedback3d/auth"
 	"github.com/avalith-net/skill-factory-go-feedback3d/db"
-	"github.com/avalith-net/skill-factory-go-feedback3d/services"
+	services "github.com/avalith-net/skill-factory-go-feedback3d/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,7 +27,7 @@ func RecoverPass(c *gin.Context) {
 		c.String(http.StatusBadRequest, "must complete email form")
 		return
 	}
-	user, mailExist, _ := db.GetUserByEmail(email)
+	user, mailExist, _ := db.UserAlreadyExist(email)
 	if !mailExist {
 		c.String(http.StatusBadRequest, "Wrong mail.")
 		return

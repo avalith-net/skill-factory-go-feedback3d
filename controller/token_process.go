@@ -32,8 +32,8 @@ func TokenProcess(tk string) (*models.Claim, bool, string, error) {
 	})
 	//---> valid token --> global variables set up.
 	if err == nil {
-		_, found, _ := db.GetUserByEmail(claims.Email)
-		if found == true {
+		_, found, _ := db.UserAlreadyExist(claims.Email)
+		if found {
 			Email = claims.Email
 			IDUser = claims.ID.Hex()
 		}

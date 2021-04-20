@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/auth"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/auth"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,7 +37,7 @@ func Login(c *gin.Context) {
 		return
 	}
 	document, exists := db.LoginAttempt(usu.Email, usu.Password)
-	if exists == false {
+	if !exists {
 		c.String(http.StatusBadRequest, "Wrong mail or password.")
 		return
 	}

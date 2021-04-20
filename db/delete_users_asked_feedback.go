@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"errors"
 	"log"
 	"time"
 
@@ -22,7 +21,7 @@ func DeleteUserAskFeedback(feedbackID string) (*mongo.DeleteResult, bool) {
 
 	objID, err := primitive.ObjectIDFromHex(feedbackID)
 	if err != nil {
-		err = errors.New("error finding the UserAskFeedback to delete")
+		return nil, false
 	}
 
 	condition := bson.M{

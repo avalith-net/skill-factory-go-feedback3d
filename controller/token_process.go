@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -33,7 +33,7 @@ func TokenProcess(tk string) (*models.Claim, bool, string, error) {
 	//---> valid token --> global variables set up.
 	if err == nil {
 		_, found, _ := db.UserAlreadyExist(claims.Email)
-		if found == true {
+		if found {
 			Email = claims.Email
 			IDUser = claims.ID.Hex()
 		}

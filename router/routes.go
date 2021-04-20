@@ -3,9 +3,9 @@ package router
 import (
 	"net/http"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/controller"
-	_ "github.com/JoaoPaulo87/skill-factory-go-feedback3d/docs"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/middleware"
+	"github.com/avalith-net/skill-factory-go-feedback3d/controller"
+	_ "github.com/avalith-net/skill-factory-go-feedback3d/docs"
+	"github.com/avalith-net/skill-factory-go-feedback3d/middleware"
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"

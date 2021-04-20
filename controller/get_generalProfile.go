@@ -1,11 +1,10 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -56,11 +55,6 @@ func GetGeneralProfile(c *gin.Context) {
 	userGeneral.FeedbackAskedForUsers = len(allUsersWhoAskedForFeed)
 	userGeneral.FeedbackSent = len(user.FeedbackStatus.FeedbacksSended)
 	userGeneral.ProfilePicture = user.ProfilePicture
-
-	fmt.Println("Imprimiendo allFeedRequested, allUsersWhoAskedForFeed y los feedback enviados")
-	fmt.Println(len(allFeedRequested))
-	fmt.Println(len(allUsersWhoAskedForFeed))
-	fmt.Println(len(user.FeedbackStatus.FeedbacksSended))
 
 	user, _ = db.GetUser(IDUser)
 

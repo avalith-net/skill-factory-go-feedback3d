@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"github.com/gin-gonic/gin"
 
-	services "github.com/JoaoPaulo87/skill-factory-go-feedback3d/services/email"
+	services "github.com/avalith-net/skill-factory-go-feedback3d/services/email"
 )
 
 const (

@@ -2,11 +2,10 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"time"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/auth"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/auth"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -46,8 +45,6 @@ func ModifyUser(u models.User, ID string) (bool, error) {
 	updtString := bson.M{
 		"$set": register,
 	}
-
-	fmt.Println()
 
 	objID, _ := primitive.ObjectIDFromHex(ID)
 

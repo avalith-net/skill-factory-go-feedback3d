@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -40,7 +40,7 @@ func SignUp(c *gin.Context) {
 		return
 	}
 	_, encontrado, _ := db.UserAlreadyExist(t.Email)
-	if encontrado == true {
+	if encontrado {
 		c.String(http.StatusBadRequest, "Email already registered.")
 		return
 	}
@@ -49,7 +49,7 @@ func SignUp(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Database error "+err.Error())
 		return
 	}
-	if status == false {
+	if !status {
 		c.String(http.StatusInternalServerError, "Error, Register not added.")
 		return
 	}

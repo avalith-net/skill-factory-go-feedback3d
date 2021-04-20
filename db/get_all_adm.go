@@ -2,10 +2,9 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"time"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -50,6 +49,5 @@ func GetAllAdmins() ([]*models.User, error) {
 	}
 	cursor.Close(ctx)
 
-	fmt.Println(admins)
 	return admins, nil
 }

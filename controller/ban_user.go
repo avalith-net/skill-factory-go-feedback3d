@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,7 +37,7 @@ func BanUser(c *gin.Context) {
 		c.String(http.StatusBadRequest, "You're trying to ban an admin.")
 		return
 	}
-	if user.Enabled == false {
+	if !user.Enabled {
 		c.String(http.StatusBadRequest, "User already banned.")
 		return
 	}

@@ -2,13 +2,12 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
-	services "github.com/JoaoPaulo87/skill-factory-go-feedback3d/services/email"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
+	services "github.com/avalith-net/skill-factory-go-feedback3d/services/email"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 
@@ -48,6 +47,9 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 	user, err := db.GetUser(rID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Error returning user")
+	}
 	_, isFound, _ := db.UserAlreadyExist(user.Email)
 	if !isFound {
 		c.String(http.StatusBadRequest, "User was not found.")
@@ -125,13 +127,11 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 
-	deletetionResult, isDeleted := db.DeleteUserAskFeedback(userAskingFeedID)
+	_, isDeleted = db.DeleteUserAskFeedback(userAskingFeedID)
 	if !isDeleted {
 		c.String(http.StatusBadRequest, "Error trying to delete asked request with given ID. ")
 		return
 	}
-
-	fmt.Println(deletetionResult)
 
 	var modifiedLoggedUser models.User
 
@@ -171,8 +171,5 @@ func hasZeroGroup(group ...interface{}) bool {
 		}
 		count++
 	}
-	if count == len(group) {
-		return false
-	}
-	return true
+	return count != len(group)
 }

@@ -2,11 +2,10 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"time"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/auth"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/auth"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -21,13 +20,15 @@ func AddRegister(u models.User) (string, bool, error) {
 	var err error
 
 	u.Password, err = auth.PassEncrypt(u.Password)
+	if err != nil {
+		return "Error encrypting the password.", false, err
+	}
 	u.Enabled = true
 	u.Role = "user"
 
 	result, err := col.InsertOne(ctx, u)
 	if err != nil {
-		fmt.Println("Error trying to insert the register in database")
-		return "", false, err
+		return "Error trying to insert the register in database", false, err
 	}
 	ObjID, _ := result.InsertedID.(primitive.ObjectID)
 

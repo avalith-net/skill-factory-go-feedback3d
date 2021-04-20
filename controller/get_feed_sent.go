@@ -1,11 +1,10 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,7 +40,6 @@ func GetFeedsSent(c *gin.Context) {
 
 		UserAllFeedbacks = append(UserAllFeedbacks, feedResult)
 	}
-	fmt.Println(UserAllFeedbacks)
 
 	c.JSON(http.StatusCreated, UserAllFeedbacks)
 }

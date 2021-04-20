@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 

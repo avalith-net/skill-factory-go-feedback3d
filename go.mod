@@ -1,4 +1,4 @@
-module github.com/JoaoPaulo87/skill-factory-go-feedback3d
+module github.com/avalith-net/skill-factory-go-feedback3d
 
 go 1.16
 

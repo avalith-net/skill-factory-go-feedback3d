@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/db"
-	"github.com/JoaoPaulo87/skill-factory-go-feedback3d/models"
+	"github.com/avalith-net/skill-factory-go-feedback3d/db"
+	"github.com/avalith-net/skill-factory-go-feedback3d/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -51,7 +51,7 @@ func SetProfilePicture(c *gin.Context) {
 	user.ProfilePicture = IDUser + "." + extension
 
 	status, err = db.ModifyUser(user, IDUser)
-	if err != nil || status == false {
+	if err != nil || !status {
 		c.String(http.StatusBadRequest, "Database error  "+err.Error())
 		return
 	}

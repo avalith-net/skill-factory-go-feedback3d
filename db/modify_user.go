@@ -37,8 +37,6 @@ func ModifyUser(u models.User, ID string) (bool, error) {
 	}
 
 	register["feedbackstatus"] = u.FeedbackStatus
-	// register["feedsrequested"] = u.FeedbacksRequested
-	// register["users_asked_feed"] = u.UsersAskedFeed
 
 	//Improve
 	if len(u.Name) == 0 && len(u.LastName) == 0 && len(u.ProfilePicture) == 0 && len(u.Password) == 0 {

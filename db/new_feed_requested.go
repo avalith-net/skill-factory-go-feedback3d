@@ -9,7 +9,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-//AddFeedback is used to store feedbacks into the db.
 func AddFeedbackRequested(fbr models.FeedbacksRequested) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()

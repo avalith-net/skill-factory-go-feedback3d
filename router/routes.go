@@ -47,7 +47,6 @@ func SetRoutes() {
 			jwt.GET("/users/search/:name", controller.GetByFullName)
 			jwt.GET("/users/get/:id", controller.GetGeneralProfile)
 			jwt.PATCH("/users/report/:feed_id", controller.ReportFeed)
-			jwt.POST("/reportNotification", controller.ReportNotification)
 			jwt.GET("/users/get_feedback_sent/:id", controller.GetFeedsSent)
 
 			admin := jwt.Group("/")

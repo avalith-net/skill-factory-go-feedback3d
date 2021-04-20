@@ -119,8 +119,6 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 
-	//Tengo que obtener los id, tener los obj para despues poder borrarlos y persistirlo en el usuario.
-
 	_, isDeleted := db.DeleteFeedbackRequested(feedRequestedID)
 	if !isDeleted {
 		c.String(http.StatusBadRequest, "Error trying to delete requested feed with given ID. ")
@@ -141,20 +139,6 @@ func FeedbackTry(c *gin.Context) {
 
 	modifiedLoggedUser.FeedbackStatus.FeedbacksSended = append(modifiedLoggedUser.FeedbackStatus.FeedbacksSended, feedID)
 
-	// feedRequestedObj, err := db.GetSelectedFeedBackRequestObj(feedRequestedID)
-	// if err != nil {
-	// 	c.String(http.StatusBadRequest, "Cannot get objID of feedbackRequest in feedback request.")
-	// 	return
-	// }
-
-	// fmt.Println(feedRequestedObj)
-
-	//Tengo que crear 2 funciones. Una para que me traiga el obj de fbr y otra
-	//para que me traiga el obj uaf. Cuando los traiga, los tengo que poner en
-	//modifiedLoggedUser, cada una en su respectivo campo. Asi se me actualiza.
-	//El problema es que ya los borre los objetos, por lo que voy a tener que
-	//hacer otro feedback_request a un user y otro fb_attempt
-
 	isLoggedUserModified, err := db.ModifyUser(modifiedLoggedUser, IDUser)
 	if !isLoggedUserModified {
 		c.String(http.StatusBadRequest, "Fail on changing the logged user. ")
@@ -165,30 +149,6 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 
-	//Ahora tengo que borrar el obj de users_asks_feed del target_id, o sea, user.
-
-	var modifiedTargetUser models.User
-
-	copier.Copy(&modifiedTargetUser, &user)
-
-	// askingForFeedBackObj, err := db.GetUserAskingForFeedBackObj(userAskingFeedID)
-	// if err != nil {
-	// 	c.String(http.StatusBadRequest, "Cannot get objID of userAskingFeed in feedback request.")
-	// 	return
-	// }
-
-	// fmt.Println("Imprimiendo askingForFeedBackObj.ID.Hex()")
-	// fmt.Println(askingForFeedBackObj.ID.Hex())
-
-	isTargetUserModified, err := db.ModifyUser(modifiedTargetUser, rID)
-	if !isTargetUserModified {
-		c.String(http.StatusBadRequest, "Fail on changing the logged user. ")
-		return
-	}
-	if err != nil {
-		c.String(http.StatusBadRequest, "Error trying to modified logged user. ")
-		return
-	}
 	//----------------------------------------------------------------------------------------------------
 
 	c.String(http.StatusCreated, "Success")

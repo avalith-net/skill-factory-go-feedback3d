@@ -39,8 +39,8 @@ func SignUp(c *gin.Context) {
 		c.String(http.StatusBadRequest, "Your password must be at least 6 characters long.")
 		return
 	}
-	_, encontrado, _ := db.GetUserByEmail(t.Email)
-	if encontrado == true {
+	_, encontrado, _ := db.UserAlreadyExist(t.Email)
+	if encontrado {
 		c.String(http.StatusBadRequest, "Email already registered.")
 		return
 	}
@@ -49,7 +49,7 @@ func SignUp(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Database error "+err.Error())
 		return
 	}
-	if status == false {
+	if !status {
 		c.String(http.StatusInternalServerError, "Error, Register not added.")
 		return
 	}

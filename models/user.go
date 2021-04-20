@@ -15,4 +15,5 @@ type User struct {
 	Graphic        Graphic            `bson:"graphic" json:"graphic,omitempty"`
 	Role           string             `bson:"role" json:"role"`
 	Enabled        bool               `bson:"enabled" json:"enabled,omitempty"`
+	FeedbackStatus FeedbackStatus     `bson:"feedbackstatus" json:"feedbackstatus,omitempty"`
 }

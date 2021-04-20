@@ -8,8 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-//GetUserByEmail checks if the user is inside the db.
-func GetUserByEmail(email string) (models.User, bool, string) {
+//UserAlreadyExist checks if the user is inside the db.
+func UserAlreadyExist(email string) (models.User, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	db := MongoCN.Database("feedback-db")

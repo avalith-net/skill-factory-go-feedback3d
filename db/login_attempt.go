@@ -7,8 +7,8 @@ import (
 
 //LoginAttempt checks if the user already exists and verifies the password.
 func LoginAttempt(email string, password string) (models.User, bool) {
-	user, found, _ := GetUserByEmail(email)
-	if found == false {
+	user, found, _ := UserAlreadyExist(email)
+	if !found {
 		return user, false
 	}
 
@@ -16,7 +16,7 @@ func LoginAttempt(email string, password string) (models.User, bool) {
 	passwordDb := []byte(user.Password) // db pass
 	match, _ := auth.ComparePasswords(passwordToBytes, passwordDb)
 
-	if match != true {
+	if !match {
 		return user, false
 	}
 	return user, true

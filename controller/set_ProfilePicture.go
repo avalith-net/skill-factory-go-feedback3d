@@ -32,6 +32,9 @@ func SetProfilePicture(c *gin.Context) {
 	}
 	//call photo manager
 	extension, err := services.ManagePhoto(file, IDUser)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Photo managment fail.")
+	}
 
 	/*recording the change in the database */
 	var user models.User
@@ -39,7 +42,7 @@ func SetProfilePicture(c *gin.Context) {
 	user.ProfilePicture = IDUser + "." + extension
 
 	status, err = db.ModifyUser(user, IDUser)
-	if err != nil || status == false {
+	if err != nil || !status {
 		c.String(http.StatusBadRequest, "Database error  "+err.Error())
 		return
 	}

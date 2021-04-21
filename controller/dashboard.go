@@ -29,11 +29,28 @@ func GetDashboard(c *gin.Context) {
 		c.String(http.StatusBadRequest, "Error"+err.Error())
 		return
 	}
+
+	//Getting all the feedRequestedObjs of the logged user.
+	allFeedRequested, err := db.GetAllFeedRequested(IDUser)
+	if err != nil {
+		c.String(http.StatusBadRequest, "There's no feedRequested objects.")
+		return
+	}
+
+	allUsersWhoAskedForFeed, err := db.GetAllUsersAskingForFeed(IDUser)
+	if err != nil {
+		c.String(http.StatusBadRequest, "There's no UsersAsksFeed objects.")
+		return
+	}
+
 	var userGeneral models.AdminProfile
 	userGeneral.Profile.CompleteName = user.Name + " " + user.LastName
 	userGeneral.Profile.ProfilePicture = user.ProfilePicture
 	userGeneral.Profile.Graphic = user.Graphic
 	userGeneral.Metrics = feedSlice
+	userGeneral.Profile.FeedbackSent = len(user.FeedbackStatus.FeedbacksSended)
+	userGeneral.Profile.FeedbacksRequested = len(allFeedRequested)
+	userGeneral.Profile.FeedbackAskedForUsers = len(allUsersWhoAskedForFeed)
 
 	c.JSON(http.StatusCreated, userGeneral)
 }

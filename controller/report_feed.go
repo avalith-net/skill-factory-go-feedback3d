@@ -51,27 +51,25 @@ func ReportFeed(c *gin.Context) {
 		c.String(http.StatusBadRequest, "Feedback could not be reported.")
 		return
 	}
-	//admins, err := db.GetAllAdmins()
-	_, err = db.GetAllAdmins()
+	admins, err := db.GetAllAdmins()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"Coudn´t get the admins": err.Error()})
 		return
 	}
 
 	// We go through each administrator to access each token and each email to be able to send the reported feeback
-	//for _, eachAdmin := range admins {
+	for _, eachAdmin := range admins {
 
-	bodyString := "<b><i>Hi admin!</i></b>\n" +
-		"A user ask yours review about a feedback. Could you please take a moment to check it out?" +
-		"Follow this link to give me feedback: <b><i>http:localhost:8080/selectedFeedback?feedID=" + feedID +
-		"</i></b>\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format("2006.01.02 15:04:05")
+		bodyString := "<b><i>Hi admin!</i></b>\n" +
+			"A user ask yours review about a feedback. Could you please take a moment to check it out?" +
+			"Follow this link to give me feedback: <b><i>http:localhost:8080/selectedFeedback?feedID=" + feedID +
+			"</i></b>\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format("2006.01.02 15:04:05")
 
-	//if !services.SendEmail(eachAdmin.Email, "Feedback reported.", bodyString) {
-	if !services.SendEmail("elponyde9@gmail.com", "Feedback reported.", bodyString) {
-		c.String(http.StatusBadRequest, "An error has ocurred sending the email "+err.Error())
-		return
+		if !services.SendEmail(eachAdmin.Email, "Feedback reported.", bodyString) {
+			c.String(http.StatusBadRequest, "An error has ocurred sending the email "+err.Error())
+			return
+		}
 	}
-	//}
 
 	c.String(http.StatusCreated, "Feedback reported.")
 }

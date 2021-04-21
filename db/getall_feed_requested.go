@@ -16,19 +16,20 @@ func GetAllFeedRequested(targetUserID string) ([]*models.FeedbacksRequested, err
 	db := MongoCN.Database("feedback-db")
 	col := db.Collection("feedbacks-requested")
 
-	var feedsRequested []*models.FeedbacksRequested
+	var (
+		feedsRequested []*models.FeedbacksRequested
+		page           int64
+	)
 
-	condicion := bson.M{
-		"user_logged_id": bson.M{"$eq": targetUserID},
-	}
+	condition := bson.M{"user_logged_id": bson.M{"$eq": targetUserID}}
 
-	var page int64 = 1
+	page = 1
 
 	findOptions := options.Find()
 	findOptions.SetSkip((page - 1) * 20)
 	findOptions.SetLimit(20)
 
-	cursor, err := col.Find(ctx, condicion, findOptions)
+	cursor, err := col.Find(ctx, condition, findOptions)
 	if err != nil {
 		return nil, err
 	}

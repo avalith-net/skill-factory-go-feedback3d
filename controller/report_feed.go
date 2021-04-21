@@ -52,6 +52,7 @@ func ReportFeed(c *gin.Context) {
 		return
 	}
 	admins, err := db.GetAllAdmins()
+	_, err = db.GetAllAdmins()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"Coudn´t get the admins": err.Error()})
 		return

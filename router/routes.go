@@ -28,7 +28,7 @@ import (
 func SetRoutes() {
 	//set router
 	r := gin.Default()
-	r.Use(cors.Default())
+	r.Use(cors.AllowAll())
 
 	r.LoadHTMLGlob("templates/*")
 

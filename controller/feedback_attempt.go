@@ -72,7 +72,7 @@ func FeedbackTry(c *gin.Context) {
 	}
 
 	// graphic stats
-	err = services.InitGraphic(fb, &user)
+	user.Graphic, err = services.InitGraphic(fb, user)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return

@@ -14,17 +14,23 @@ func AddRegister(u models.User) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	db := MongoCN.Database("feedback-db")
-	col := db.Collection("users")
+	database := MongoCN.Database("feedback-db")
+	col := database.Collection("users")
+
 	var err error
+
 	u.Password, err = auth.PassEncrypt(u.Password)
+	if err != nil {
+		return "Error encrypting the password.", false, err
+	}
 	u.Enabled = true
 	u.Role = "user"
 	u.Graphic = models.Graphic{}
 	result, err := col.InsertOne(ctx, u)
 	if err != nil {
-		return "", false, err
+		return "Error trying to insert the register in database", false, err
 	}
 	ObjID, _ := result.InsertedID.(primitive.ObjectID)
-	return ObjID.String(), true, nil
+
+	return ObjID.Hex(), true, nil
 }

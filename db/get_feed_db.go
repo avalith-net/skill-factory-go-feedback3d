@@ -35,7 +35,8 @@ func GetFeedFromDb(ID string, condition bool) ([]models.Feedback, error) {
 
 	cur, err := col.Find(ctx, filter)
 	if err != nil {
-		err = errors.New("Error al buscar los elementos")
+		err = errors.New("error al buscar los elementos")
+		return nil, err
 	}
 
 	for cur.Next(ctx) {
@@ -43,7 +44,8 @@ func GetFeedFromDb(ID string, condition bool) ([]models.Feedback, error) {
 		var elem models.Feedback
 		err := cur.Decode(&elem)
 		if err != nil {
-			err = errors.New("Error al buscar los elementos")
+			err = errors.New("error al buscar los elementos")
+			return nil, err
 		}
 		feedSlice = append(feedSlice, elem)
 	}

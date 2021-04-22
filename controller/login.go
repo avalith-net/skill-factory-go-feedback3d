@@ -37,7 +37,7 @@ func Login(c *gin.Context) {
 		return
 	}
 	document, exists := db.LoginAttempt(usu.Email, usu.Password)
-	if exists == false {
+	if !exists {
 		c.String(http.StatusBadRequest, "Wrong mail or password.")
 		return
 	}

@@ -2,19 +2,24 @@ package models
 
 import (
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 //Feedback structure
 type Feedback struct {
-	IssuerID        string          `bson:"issuer_id,omitempty" json:"issuer_id" structs:"-"`
-	ReceiverID      string          `bson:"receiver_id,omitempty" json:"receiver_id" structs:"-"`
-	IssuerName      string          `bson:"issuer_name,omitempty" json:"issuer_name" structs:"-"`
-	Date            time.Time       `bson:"date" json:"date,omitempty" structs:"-"`
-	TechArea        TechArea        `bson:"techarea,omitempty,inline" json:"techarea,omitempty"`
-	TeamArea        TeamArea        `bson:"teamarea,omitempty,inline" json:"teamarea,omitempty"`
-	PerformanceArea PerformanceArea `bson:"performancearea,omitempty,inline" json:"performancearea,omitempty"`
-	Message         string          `bson:"message,omitempty" json:"message,omitempty" validate:"omitempty,max=1500" structs:"-"`
-	Skills          []Skill         `bson:"skills,omitempty" json:"skills,omitempty" structs:"-"`
+	ID              primitive.ObjectID `bson:"_id,omitempty" json:"_id"`
+	IssuerID        string             `bson:"issuer_id,omitempty" json:"issuer_id" structs:"-"`
+	ReceiverID      string             `bson:"receiver_id,omitempty" json:"receiver_id" structs:"-"`
+  IssuerName      string          `bson:"issuer_name,omitempty" json:"issuer_name" structs:"-"`
+	Date            time.Time          `bson:"date" json:"date,omitempty" structs:"-"`
+	TechArea        TechArea           `bson:"techarea,omitempty,inline" json:"techarea,omitempty"`
+	TeamArea        TeamArea           `bson:"teamarea,omitempty,inline" json:"teamarea,omitempty"`
+	PerformanceArea PerformanceArea    `bson:"performancearea,omitempty,inline" json:"performancearea,omitempty"`
+	Message         string             `bson:"message,omitempty" json:"message,omitempty" validate:"omitempty,max=1500" structs:"-"`
+	Skills          []Skill            `bson:"skills,omitempty" json:"skills,omitempty" structs:"-"`
+	IsApprobed      bool               `bson:"is_approbed" json:"is_approbed"`
+	IsReported      bool               `bson:"is_reported" json:"is_reported"`
 }
 
 //TechArea .

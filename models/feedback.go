@@ -8,6 +8,7 @@ import (
 type Feedback struct {
 	IssuerID        string          `bson:"issuer_id,omitempty" json:"issuer_id" structs:"-"`
 	ReceiverID      string          `bson:"receiver_id,omitempty" json:"receiver_id" structs:"-"`
+	IssuerName      string          `bson:"issuer_name,omitempty" json:"issuer_name" structs:"-"`
 	Date            time.Time       `bson:"date" json:"date,omitempty" structs:"-"`
 	TechArea        TechArea        `bson:"techarea,omitempty,inline" json:"techarea,omitempty"`
 	TeamArea        TeamArea        `bson:"teamarea,omitempty,inline" json:"teamarea,omitempty"`

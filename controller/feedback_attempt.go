@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -71,11 +72,12 @@ func FeedbackTry(c *gin.Context) {
 	}
 
 	// graphic stats
-	user.Graphic, err = services.InitGraphic(fb, user)
+	err = services.InitGraphic(fb, &user)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
+	fmt.Println(user.Graphic)
 	// persist graphic.
 	_, err = db.UpdateGraphic(user, rID)
 	if err != nil {
@@ -85,6 +87,7 @@ func FeedbackTry(c *gin.Context) {
 	//-----------------------------------
 
 	fb.IssuerID = IDUser
+	fb.IssuerName = validUser.Name + " " + validUser.LastName
 	fb.ReceiverID = rID
 	fb.Date = time.Now()
 
@@ -118,8 +121,5 @@ func hasZeroGroup(group ...interface{}) bool {
 		}
 		count++
 	}
-	if count == len(group) {
-		return false
-	}
-	return true
+	return count != len(group)
 }

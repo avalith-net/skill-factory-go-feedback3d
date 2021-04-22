@@ -81,7 +81,6 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
-	fmt.Println(user.Graphic)
 	// persist graphic.
 	_, err = db.UpdateGraphic(user, rID)
 	if err != nil {

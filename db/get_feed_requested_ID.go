@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func GetFeedBackRequestedID(targetUserID string, loggedUserID string) (string, error) {
+func GetFeedBackRequestedID(targetUserID string, loggedUserID string) (string, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	db := MongoCN.Database("feedback-db")
@@ -26,8 +26,8 @@ func GetFeedBackRequestedID(targetUserID string, loggedUserID string) (string, e
 
 	if err != nil {
 		fmt.Println("feedbackRequest ojb not found with given ID inside GetFeedBackRequestedID function ->" + err.Error())
-		return feedStatus.ID.Hex(), err
+		return feedStatus.ID.Hex(), false
 	}
 
-	return feedStatus.ID.Hex(), nil
+	return feedStatus.ID.Hex(), true
 }

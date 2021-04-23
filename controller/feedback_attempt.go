@@ -113,28 +113,27 @@ func FeedbackTry(c *gin.Context) {
 		return
 	}
 
-	feedRequestedID, err := db.GetFeedBackRequestedID(IDUser, rID)
-	if err != nil {
-		c.String(http.StatusBadRequest, "Error trying to get feedbackRequest ID with givens users IDs. ")
-		return
-	}
+	//If the feedback was requested, then inside feedback_request function the feedRequested and userAskingFeed objects should have been created.
+	//if they have not been created, then the feedback was not requested and it's not necessary delete them.
+	feedRequestedID, isFound := db.GetFeedBackRequestedID(IDUser, rID)
+	if isFound {
+		userAskingFeedID, err := db.GetUsersAskedFeedbackID(IDUser, rID)
+		if err != nil {
+			c.String(http.StatusBadRequest, "Error trying to get userAsksFeed ID with givens users IDs. ")
+			return
+		}
 
-	userAskingFeedID, err := db.GetUsersAskedFeedbackID(IDUser, rID)
-	if err != nil {
-		c.String(http.StatusBadRequest, "Error trying to get userAsksFeed ID with givens users IDs. ")
-		return
-	}
+		_, isDeleted := db.DeleteFeedbackRequested(feedRequestedID)
+		if !isDeleted {
+			c.String(http.StatusBadRequest, "Error trying to delete requested feed with given ID. ")
+			return
+		}
 
-	_, isDeleted := db.DeleteFeedbackRequested(feedRequestedID)
-	if !isDeleted {
-		c.String(http.StatusBadRequest, "Error trying to delete requested feed with given ID. ")
-		return
-	}
-
-	_, isDeleted = db.DeleteUserAskFeedback(userAskingFeedID)
-	if !isDeleted {
-		c.String(http.StatusBadRequest, "Error trying to delete asked request with given ID. ")
-		return
+		_, isDeleted = db.DeleteUserAskFeedback(userAskingFeedID)
+		if !isDeleted {
+			c.String(http.StatusBadRequest, "Error trying to delete asked request with given ID. ")
+			return
+		}
 	}
 
 	var modifiedLoggedUser models.User

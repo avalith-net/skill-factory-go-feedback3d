@@ -18,7 +18,7 @@ import (
 // @Failure default {string} string "An error has ocurred"
 // @Router /users/get_feed_requests_from_me [get]
 func GetFeedRequestsFromMe(c *gin.Context) {
-	allMyRequests, err := db.GetAllFeedRequested(IDUser)
+	allMyRequests, err := db.GetAllUsersAskingForFeed(IDUser)
 	if err != nil {
 		c.String(http.StatusBadRequest, "Error: "+err.Error())
 		return
@@ -30,7 +30,7 @@ func GetFeedRequestsFromMe(c *gin.Context) {
 	)
 
 	for _, eachRequests := range allMyRequests {
-		info = " " + eachRequests.RequestedUserName + " " + eachRequests.RequestedUserLastName + " requests your feedback."
+		info = " " + eachRequests.NameWhoAskFeed + " " + eachRequests.LastNameWhoAskFeed + " requests your feedback."
 		UserWhoRequestedFeedInfo = append(UserWhoRequestedFeedInfo, info)
 	}
 

@@ -19,10 +19,10 @@ import (
 // @Failure 400 {string} string "Must enter a name"
 // @Failure 500 {string} string "An error has ocurred trying to look for the user."
 // @Failure default {string} string "An error has ocurred"
-// @Router /users/search/{name} [get]
+// @Router /users/search [get]
 func GetByFullName(c *gin.Context) {
 	//parámetros: pag, agregar.
-	fullName := c.Param("name")
+	fullName := c.Query("name")
 	if len(fullName) < 1 {
 		c.String(http.StatusBadRequest, "You must enter a name.")
 		return

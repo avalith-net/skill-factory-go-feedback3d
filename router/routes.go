@@ -47,7 +47,7 @@ func SetRoutes() {
 			jwt.POST("/fbRequest", controller.RequestFeedback)
 			jwt.PATCH("/users/edit", controller.EditUser)
 			jwt.GET("/dashboard", controller.GetDashboard)
-			jwt.GET("/users/search/:name", controller.GetByFullName)
+			jwt.GET("/users/search", controller.GetByFullName)
 			jwt.GET("/users/get/:id", controller.GetGeneralProfile)
 			jwt.POST("/changePassword", controller.ChangePassEmail)
 			jwt.GET("/selectedFeedback", controller.GetSelectedFeedback)

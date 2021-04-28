@@ -23,5 +23,9 @@ func GetProfilePhoto(c *gin.Context) {
 		return
 	}
 
+	if len(user.ProfilePicture) < 1 {
+		c.String(http.StatusNotFound, "Image not found.")
+		return
+	}
 	c.File("uploads/profilePicture/" + user.ProfilePicture)
 }

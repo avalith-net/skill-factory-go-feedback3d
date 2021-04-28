@@ -2,6 +2,7 @@ package models
 
 //User structure
 type GeneralProfile struct {
+	UserID                string  `bson:"user_id" json:"user_id,omitempty"`
 	CompleteName          string  `bson:"completeName" json:"completeName,omitempty"`
 	ProfilePicture        string  `bson:"profilePicture" json:"profilePicture,omitempty"`
 	Role                  string  `bson:"role" json:"role,omitempty"`

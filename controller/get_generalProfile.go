@@ -50,6 +50,7 @@ func GetGeneralProfile(c *gin.Context) {
 	}
 
 	var userGeneral models.GeneralProfile
+	userGeneral.UserID = id
 	userGeneral.CompleteName = user.Name + " " + user.LastName
 	userGeneral.FeedbacksRequested = len(allFeedRequested)
 	userGeneral.FeedbackAskedForUsers = len(allUsersWhoAskedForFeed)

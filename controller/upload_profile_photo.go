@@ -2,10 +2,10 @@ package controller
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/avalith-net/skill-factory-go-feedback3d/db"
 	"github.com/avalith-net/skill-factory-go-feedback3d/models"
-	"github.com/avalith-net/skill-factory-go-feedback3d/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,22 +24,26 @@ import (
 // @Failure default {string} string "Database error"
 // @Router /setProfilePic [post]
 func SetProfilePicture(c *gin.Context) {
-	file, _ := c.FormFile("profilePicture")
+	file, err := c.FormFile("profilePicture")
 
-	if file == nil {
-		c.String(http.StatusBadRequest, "Must enter a file")
+	if file == nil || err != nil {
+		c.String(http.StatusBadRequest, "Form err "+err.Error())
 		return
 	}
-	//call photo manager
-	extension, err := services.ManagePhoto(file, IDUser)
+
+	extension := strings.Split(file.Filename, ".")[1]
+	file.Filename = IDUser + "." + extension
+	// Upload the file to specific dst.
+	err = c.SaveUploadedFile(file, "uploads/profilePicture/"+file.Filename)
 	if err != nil {
-		c.String(http.StatusBadRequest, "Photo managment fail.")
+		c.String(http.StatusInternalServerError, "Could not upload file."+err.Error())
+		return
 	}
 
 	/*recording the change in the database */
 	var user models.User
 	var status bool
-	user.ProfilePicture = IDUser + "." + extension
+	user.ProfilePicture = file.Filename
 
 	status, err = db.ModifyUser(user, IDUser)
 	if err != nil || !status {

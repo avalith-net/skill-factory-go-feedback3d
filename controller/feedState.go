@@ -29,7 +29,7 @@ func FeedbackState(c *gin.Context) {
 	//This endpoint logic it's when an admin. recives a reported feed, a page with the feed and 2 buttons appears,
 	//a button to approbe and another to disapprobe. When that happens it redirected to this endpoint with the
 	//result and if the feed is approbed, the report turns "false" and cant be reported again once approbed.
-	//But if its disapprobed, then the feedback is delete from the db.
+	//But if its disapprobed, then the feedback is no longer displayable.
 	feedState := c.Param("is_approbed")
 	feedID := c.Query("feed_id")
 
@@ -52,8 +52,12 @@ func FeedbackState(c *gin.Context) {
 	state, _ := strconv.ParseBool(feedState)
 
 	isApprobedState, err := db.UpdateFeedbackState(feedID, state)
-	if err != nil || !isApprobedState {
+	if err != nil {
 		c.String(http.StatusBadRequest, "Database error "+err.Error())
+		return
+	}
+	if !isApprobedState {
+		c.String(http.StatusBadRequest, "Something went wrong updating the feedback state.")
 		return
 	}
 
@@ -63,6 +67,7 @@ func FeedbackState(c *gin.Context) {
 		return
 	}
 
+	// It sends an email with the notification that the fb was approbed according to the admins criteria.
 	if state {
 		bodyString := "<b><i>Hi " + feedSender.Name + " " + feedSender.LastName + "!</i></b>\n" +
 			"We check the report you send with the admins and everything looks ok. If you think we commited a mistake please text us!\n<br>" +
@@ -76,6 +81,7 @@ func FeedbackState(c *gin.Context) {
 		c.String(http.StatusCreated, "Feedback state created. Feed approbed")
 	} else {
 
+		//In case the feedback was disapprobed, we send an email to the user with the notification and the fb is no longer displayable.
 		bodyString := "<b><i>Hi " + feedSender.Name + " " + feedSender.LastName + "!</i></b>\n" +
 			"We check the report you send with the admins and we are very sorry this situation. This feedback was disapprobed according to our politics!\n\n<br>" +
 			feedSender.Name + " you're very important to us! If you think we commited a mistake or anything we can help, please text us!\n<br>" +
@@ -87,8 +93,13 @@ func FeedbackState(c *gin.Context) {
 			return
 		}
 
-		deleteResponse, _ := db.DeleteFeedback(feedID)
+		//We set to false the displayable option and with this the user can't see the fb.
+		_, err := db.FeedIsNotDisplayable(feedID)
+		if err != nil {
+			c.String(http.StatusBadRequest, "An error has ocurred sending the email "+err.Error())
+			return
+		}
 
-		c.JSON(http.StatusCreated, gin.H{"Feedback state created. Feed was disapprobed and deleted. ": deleteResponse})
+		c.JSON(http.StatusCreated, "Feedback state created. Feed was disapprobed and deleted")
 	}
 }

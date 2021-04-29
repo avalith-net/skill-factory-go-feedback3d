@@ -21,7 +21,8 @@ func GetSelectedFeedBack(FeedbackID string) (models.Feedback, error) {
 
 	objID, _ := primitive.ObjectIDFromHex(FeedbackID)
 	condition := bson.M{
-		"_id": objID,
+		"_id":            objID,
+		"is_displayable": true,
 	}
 
 	if err := col.FindOne(ctx, condition).Decode(&feedback); err != nil {

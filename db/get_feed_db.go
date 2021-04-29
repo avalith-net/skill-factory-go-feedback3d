@@ -25,11 +25,13 @@ func GetFeedFromDb(ID string, condition bool) ([]models.Feedback, error) {
 	//true for receiver and false for issuer
 	if condition {
 		filter = bson.M{
-			"receiver_id": ID,
+			"receiver_id":    ID,
+			"is_displayable": true,
 		}
 	} else {
 		filter = bson.M{
-			"issuer_id": ID,
+			"issuer_id":      ID,
+			"is_displayable": true,
 		}
 	}
 

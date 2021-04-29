@@ -30,7 +30,6 @@ func SetRoutes() {
 	r := gin.Default()
 	r.Use(cors.AllowAll())
 
-	r.LoadHTMLGlob("templates/*")
 
 	endpoints := r.Group("/")
 	//Endpoints ------------------------------------------------------------------------------------
@@ -64,12 +63,6 @@ func SetRoutes() {
 				admin.PATCH("/users/feedState/:is_approbed", controller.FeedbackState)
 			}
 		}
-		endpoints.GET("/feedback", func(c *gin.Context) {
-			c.HTML(http.StatusOK, "feedback.tmpl", gin.H{})
-		})
-		endpoints.GET("/changePassword", func(c *gin.Context) {
-			c.HTML(http.StatusOK, "change_pass.tmpl", gin.H{})
-		})
 		endpoints.POST("/recoverPass", controller.RecoverPass)
 	}
 

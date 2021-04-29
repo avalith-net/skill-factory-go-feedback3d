@@ -43,7 +43,7 @@ func SetProfilePicture(c *gin.Context) {
 
 	status, err = db.ModifyUser(user, IDUser)
 	if err != nil || !status {
-		c.String(http.StatusBadRequest, "Database error  "+err.Error())
+		c.String(http.StatusInternalServerError, "Database error  "+err.Error())
 		return
 	}
 

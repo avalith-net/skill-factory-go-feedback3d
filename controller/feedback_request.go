@@ -52,54 +52,92 @@ func RequestFeedback(c *gin.Context) {
 		return
 	}
 
-	var feedRequested models.FeedbacksRequested
-
-	feedRequested.RequestedUserID = id
-	feedRequested.UserLoggedID = IDUser
-	feedRequested.RequestedUserName = user.Name
-	feedRequested.RequestedUserLastName = user.LastName
-	feedRequested.SentDate = time.Now()
-
-	_, isRequestCreated, err := db.AddFeedbackRequested(feedRequested)
+	allFeedRequested, err := db.GetAllFeedRequested(IDUser)
 	if err != nil {
-		c.String(http.StatusBadRequest, "Cannot create a feedback request to target user in feedback request.")
-		return
-	}
-	if !isRequestCreated {
-		c.String(http.StatusBadRequest, "Something went wrong trying create a request to target user in feedback request.")
+		c.String(http.StatusBadRequest, "There's no feedback requested from this user")
 		return
 	}
 
-	var userAskingFeed models.UsersAskedFeed
+	var daysBetweenRequestsRound int64
+	var secondsBetweenRequest int64
 
-	userAskingFeed.UserWhoAskFeedID = IDUser
-	userAskingFeed.UserAskedForFeedID = id
-	userAskingFeed.NameWhoAskFeed = loggedUser.Name
-	userAskingFeed.LastNameWhoAskFeed = loggedUser.LastName
-	userAskingFeed.SentDate = time.Now()
+	//We searching for a feedback request between the logged user and requested user.
+	// In case it does exist, we calculate the diff of seconds and days.
+	// If 15 days has passed, the user can request another feedback.
+	// Also if it is the first request between this 2 users, request its allow, that's
+	//why we check for the seconds. If the diff is 0, it means there is no previous request.
+	for _, feedRequested := range allFeedRequested {
+		if feedRequested.RequestedUserID == id {
 
-	userAskingFeedID, isRequestCreated, err := db.AddUsersAsksFeed(userAskingFeed)
-	if err != nil {
-		c.String(http.StatusBadRequest, "Cannot create a userAsksFeed instance in feedback request.")
-		return
-	}
-	if !isRequestCreated {
-		c.String(http.StatusBadRequest, "Something went wrong trying create a userAsksFeed instance in feedback request. ID: "+userAskingFeedID)
-		return
-	}
+			daysBetweenRequestsFloat := time.Since(feedRequested.SentDate).Hours() / 24
+			daysBetweenRequestsRound = int64(daysBetweenRequestsFloat)
 
-	//------------------------------------------------------------------------------------------
-	// An email is send to all admins with the report notification.
-	bodyString := "Hi <b><i>" + user.Name + "</i></b>!\n" +
-		"I'd like to ask a few questions about your working experience with me. It's important to help me to improve." +
-		"Follow this link to give me feedback: <b><i>http:localhost:8080/feedback?target_id=" + IDUser +
-		"</i></b>\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format(timeFormat)
-
-	//Email send function
-	if !services.SendEmail(user.Email, "Feedback request.", bodyString) {
-		c.String(http.StatusBadRequest, "An error has ocurred sending the email")
-		return
+			secsOnRequests := time.Since(feedRequested.SentDate).Seconds()
+			secondsBetweenRequest = int64(secsOnRequests)
+		}
 	}
 
-	c.String(http.StatusCreated, "Success")
+	// if the difference is 0 it is because a feedback request was not made to that person
+	if daysBetweenRequestsRound > 15 || secondsBetweenRequest == 0 {
+
+		var feedRequested models.FeedbacksRequested
+
+		feedRequested.RequestedUserID = id
+		feedRequested.UserLoggedID = IDUser
+		feedRequested.RequestedUserName = user.Name
+		feedRequested.RequestedUserLastName = user.LastName
+		feedRequested.SentDate = time.Now()
+
+		_, isRequestCreated, err := db.AddFeedbackRequested(feedRequested)
+		if err != nil {
+			c.String(http.StatusBadRequest, "Cannot create a feedback request to target user in feedback request.")
+			return
+		}
+		if !isRequestCreated {
+			c.String(http.StatusBadRequest, "Something went wrong trying create a request to target user in feedback request.")
+			return
+		}
+
+		var userAskingFeed models.UsersAskedFeed
+
+		userAskingFeed.UserWhoAskFeedID = IDUser
+		userAskingFeed.UserAskedForFeedID = id
+		userAskingFeed.NameWhoAskFeed = loggedUser.Name
+		userAskingFeed.LastNameWhoAskFeed = loggedUser.LastName
+		userAskingFeed.SentDate = time.Now()
+
+		userAskingFeedID, isRequestCreated, err := db.AddUsersAsksFeed(userAskingFeed)
+		if err != nil {
+			c.String(http.StatusBadRequest, "Cannot create a userAsksFeed instance in feedback request.")
+			return
+		}
+		if !isRequestCreated {
+			c.String(http.StatusBadRequest, "Something went wrong trying create a userAsksFeed instance in feedback request. ID: "+userAskingFeedID)
+			return
+		}
+
+		//------------------------------------------------------------------------------------------
+		// An email is send to all admins with the report notification.
+		bodyString := "Hi <b><i>" + user.Name + "</i></b>!\n" +
+			"I'd like to ask a few questions about your working experience with me. It's important to help me to improve." +
+			"Follow this link to give me feedback: <b><i>http:localhost:8080/feedback?target_id=" + IDUser +
+			"</i></b>\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format(timeFormat)
+
+		//Email send function
+		if !services.SendEmail(user.Email, "Feedback request.", bodyString) {
+			c.String(http.StatusBadRequest, "An error has ocurred sending the email")
+			return
+		}
+
+		c.String(http.StatusCreated, "Success")
+	} else {
+
+		if daysBetweenRequestsRound <= 15 {
+
+			daysLeft := 15 - services.Int64Abs(daysBetweenRequestsRound)
+
+			c.JSON(http.StatusBadRequest, gin.H{"You have to wait bewteen feedback requests. Total of days left: ": daysLeft})
+			return
+		}
+	}
 }

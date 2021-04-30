@@ -1,8 +1,6 @@
 package router
 
 import (
-	"net/http"
-
 	"github.com/avalith-net/skill-factory-go-feedback3d/controller"
 	_ "github.com/avalith-net/skill-factory-go-feedback3d/docs"
 	"github.com/avalith-net/skill-factory-go-feedback3d/middleware"
@@ -29,7 +27,6 @@ func SetRoutes() {
 	//set router
 	r := gin.Default()
 	r.Use(cors.AllowAll())
-
 
 	endpoints := r.Group("/")
 	//Endpoints ------------------------------------------------------------------------------------

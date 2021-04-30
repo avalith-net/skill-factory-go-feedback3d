@@ -60,7 +60,7 @@ func SetRoutes() {
 			admin.Use(middleware.IsAdmin())
 			{
 				admin.PATCH("/users/ban/:id", controller.BanUser)
-				admin.PATCH("/users/feedState/:is_approbed", controller.FeedbackState)
+				admin.PATCH("/users/feed_state", controller.FeedbackState)
 			}
 		}
 		endpoints.GET("/feedback", func(c *gin.Context) {

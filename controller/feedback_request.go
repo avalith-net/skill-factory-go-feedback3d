@@ -52,12 +52,6 @@ func RequestFeedback(c *gin.Context) {
 		return
 	}
 
-	allFeedRequested, err := db.GetAllFeedRequested(IDUser)
-	if err != nil {
-		c.String(http.StatusBadRequest, "There's no feedback requested from this user")
-		return
-	}
-
 	var daysBetweenRequestsRound int64
 	var secondsBetweenRequest int64
 
@@ -66,15 +60,17 @@ func RequestFeedback(c *gin.Context) {
 	// If 15 days has passed, the user can request another feedback.
 	// Also if it is the first request between this 2 users, request its allow, that's
 	//why we check for the seconds. If the diff is 0, it means there is no previous request.
-	for _, feedRequested := range allFeedRequested {
-		if feedRequested.RequestedUserID == id {
+	feedRequestedID, _ := db.GetFeedBackRequestedID(id, IDUser)
 
-			daysBetweenRequestsFloat := time.Since(feedRequested.SentDate).Hours() / 24
-			daysBetweenRequestsRound = int64(daysBetweenRequestsFloat)
+	feedRequestedObj, isCreated, _ := db.GetSelectedFeedBackRequestObj(feedRequestedID)
 
-			secsOnRequests := time.Since(feedRequested.SentDate).Seconds()
-			secondsBetweenRequest = int64(secsOnRequests)
-		}
+	if isCreated {
+
+		daysBetweenRequestsFloat := time.Since(feedRequestedObj.SentDate).Hours() / 24
+		daysBetweenRequestsRound = int64(daysBetweenRequestsFloat)
+
+		secsOnRequests := time.Since(feedRequestedObj.SentDate).Seconds()
+		secondsBetweenRequest = int64(secsOnRequests)
 	}
 
 	// if the difference is 0 it is because a feedback request was not made to that person

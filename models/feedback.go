@@ -11,7 +11,7 @@ type Feedback struct {
 	ID              primitive.ObjectID `bson:"_id,omitempty" json:"_id"`
 	IssuerID        string             `bson:"issuer_id,omitempty" json:"issuer_id" structs:"-"`
 	ReceiverID      string             `bson:"receiver_id,omitempty" json:"receiver_id" structs:"-"`
-  IssuerName      string          `bson:"issuer_name,omitempty" json:"issuer_name" structs:"-"`
+	IssuerName      string             `bson:"issuer_name,omitempty" json:"issuer_name" structs:"-"`
 	Date            time.Time          `bson:"date" json:"date,omitempty" structs:"-"`
 	TechArea        TechArea           `bson:"techarea,omitempty,inline" json:"techarea,omitempty"`
 	TeamArea        TeamArea           `bson:"teamarea,omitempty,inline" json:"teamarea,omitempty"`
@@ -20,6 +20,7 @@ type Feedback struct {
 	Skills          []Skill            `bson:"skills,omitempty" json:"skills,omitempty" structs:"-"`
 	IsApprobed      bool               `bson:"is_approbed" json:"is_approbed"`
 	IsReported      bool               `bson:"is_reported" json:"is_reported"`
+	IsDisplayable   bool               `bson:"is_displayable" json:"is_displayable"`
 }
 
 //TechArea .

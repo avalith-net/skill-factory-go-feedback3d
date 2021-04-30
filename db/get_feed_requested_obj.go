@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func GetSelectedFeedBackRequestObj(FeedStatusID string) (models.FeedbacksRequested, error) {
+func GetSelectedFeedBackRequestObj(FeedStatusID string) (models.FeedbacksRequested, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	db := MongoCN.Database("feedback-db")
@@ -25,8 +25,8 @@ func GetSelectedFeedBackRequestObj(FeedStatusID string) (models.FeedbacksRequest
 
 	if err := col.FindOne(ctx, condition).Decode(&feedbackStatusObj); err != nil {
 		fmt.Println("feedbackrequest obj not found with given ID " + err.Error())
-		return feedbackStatusObj, err
+		return feedbackStatusObj, false, err
 	}
 
-	return feedbackStatusObj, nil
+	return feedbackStatusObj, true, nil
 }

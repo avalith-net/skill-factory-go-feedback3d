@@ -94,6 +94,7 @@ func FeedbackTry(c *gin.Context) {
 	fb.Date = time.Now()
 	fb.IsApprobed = false
 	fb.IsReported = false
+	fb.IsDisplayable = true
 
 	// Send email notification
 

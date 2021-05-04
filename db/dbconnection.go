@@ -15,7 +15,7 @@ var clientOptions = options.Client().ApplyURI(os.Getenv("DB_URI"))
 
 //ConnectionDB is the actual function to connect to the db.
 func ConnectionDB() *mongo.Client {
-	client, err := mongo.Connect(context.TODO(), clientOptions)
+	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
 		log.Fatal(err.Error())
 		return client

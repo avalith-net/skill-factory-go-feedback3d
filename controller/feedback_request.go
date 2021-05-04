@@ -83,6 +83,7 @@ func RequestFeedback(c *gin.Context) {
 		feedRequested.RequestedUserName = user.Name
 		feedRequested.RequestedUserLastName = user.LastName
 		feedRequested.SentDate = time.Now()
+		feedRequested.TimeLeft = 15
 
 		_, isRequestCreated, err := db.AddFeedbackRequested(feedRequested)
 		if err != nil {

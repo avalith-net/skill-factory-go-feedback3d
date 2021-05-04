@@ -13,4 +13,5 @@ type FeedbacksRequested struct {
 	RequestedUserName     string             `bson:"requested_user_name" json:"name,omitempty"`
 	RequestedUserLastName string             `bson:"requested_user_lastname" json:"lastname,omitempty"`
 	SentDate              time.Time          `bson:"sentdate" json:"sentdate,omitempty"`
+	TimeLeft              int32              `bson:"timeleft" json:"timeleft,omitempty"`
 }

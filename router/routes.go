@@ -51,7 +51,6 @@ func SetRoutes() {
 			jwt.GET("/users/get_feedback_sent/:id", controller.GetFeedsSent)
 			jwt.GET("/users/my_feedbacks", controller.GetAllMyFeedbacks)
 			jwt.GET("/users/get_feed_requests_from_me", controller.GetFeedRequestsFromMe)
-			jwt.GET("/users/profile/photo/:id", controller.GetProfilePhoto)
 
 			admin := jwt.Group("/")
 			admin.Use(middleware.IsAdmin())
@@ -61,6 +60,7 @@ func SetRoutes() {
 			}
 		}
 		endpoints.POST("/recoverPass", controller.RecoverPass)
+		endpoints.GET("/users/profile/photo/:id", controller.GetProfilePhoto)
 	}
 
 	//-----------------------------------------------------------------------------------------------

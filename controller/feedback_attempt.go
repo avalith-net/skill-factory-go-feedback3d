@@ -89,11 +89,12 @@ func FeedbackTry(c *gin.Context) {
 	//-----------------------------------
 
 	fb.IssuerID = IDUser
-	fb.IssuerName = validUser.Name + " " + validUser.LastName
+	fb.IssuerName = loggedUser.Name + " " + loggedUser.LastName
 	fb.ReceiverID = rID
 	fb.Date = time.Now()
 	fb.IsApprobed = false
 	fb.IsReported = false
+	fb.IsDisplayable = true
 
 	// Send email notification
 

@@ -49,7 +49,8 @@ func Login(c *gin.Context) {
 	}
 
 	resp := models.LoginReply{
-		Token: jwtKey,
+		Token:      jwtKey,
+		UserLogged: document,
 	}
 
 	c.JSON(http.StatusCreated, resp)

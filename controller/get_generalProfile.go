@@ -49,6 +49,12 @@ func GetGeneralProfile(c *gin.Context) {
 		return
 	}
 
+	allFeedbacks, err := db.GetFeedFromDb(id, true)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Internal error.")
+		return
+	}
+
 	var userGeneral models.GeneralProfile
 	userGeneral.UserID = id
 	userGeneral.CompleteName = user.Name + " " + user.LastName
@@ -57,6 +63,7 @@ func GetGeneralProfile(c *gin.Context) {
 	userGeneral.FeedbackSent = len(user.FeedbackStatus.FeedbacksSended)
 	userGeneral.ProfilePicture = user.ProfilePicture
 	userGeneral.Graphic = user.Graphic
+	userGeneral.Metrics = allFeedbacks
 
 	user, _ = db.GetUser(IDUser)
 

@@ -28,15 +28,14 @@ import (
 // @Failure default {string} string "An error has ocurred"
 // @Router /feedback [post]
 func FeedbackTry(c *gin.Context) {
-	loggedUser, _ := db.GetUser(IDUser)
-	if !loggedUser.Enabled {
-		c.String(http.StatusUnauthorized, "User not authorized.")
-		return
-	}
-
 	rID := c.Query("target_id")
 	if len(rID) < 1 {
 		c.String(http.StatusBadRequest, "ID Error")
+		return
+	}
+	loggedUser, _ := db.GetUser(IDUser)
+	if !loggedUser.Enabled {
+		c.String(http.StatusUnauthorized, "User not authorized.")
 		return
 	}
 	user, err := db.GetUser(rID)
@@ -99,7 +98,7 @@ func FeedbackTry(c *gin.Context) {
 	// Send email notification
 
 	msg := "Hi " + user.Name + " " + user.LastName + "! \n You have received a new feedback, check it in your dashboard! <a>http:localhost:8080/dashboard</a> \n\n"
-	services.SendEmail(user.Email, "New Feedback Received!", msg)
+	go services.SendEmail(user.Email, "New Feedback Received!", msg)
 
 	//------------------------------
 

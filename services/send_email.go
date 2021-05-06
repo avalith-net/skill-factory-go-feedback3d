@@ -14,7 +14,7 @@ func SendEmail(email, subject, body string) bool {
 	msg.SetHeader("Subject", subject)
 
 	//Send the email to user
-	d := gomail.NewPlainDialer("smtp.gmail.com", 587, "vlotingaming@gmail.com", "V2H!x%CaxCeM")
+	d := gomail.NewDialer("smtp.gmail.com", 587, "vlotingaming@gmail.com", "V2H!x%CaxCeM")
 	if err := d.DialAndSend(msg); err != nil {
 		return false
 	}

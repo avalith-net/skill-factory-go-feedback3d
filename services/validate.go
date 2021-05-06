@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 func ValidateForm(i interface{}) (bool, error) {

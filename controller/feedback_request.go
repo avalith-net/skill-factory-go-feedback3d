@@ -121,10 +121,7 @@ func RequestFeedback(c *gin.Context) {
 			"</i></b>\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format(timeFormat)
 
 		//Email send function
-		if !services.SendEmail(user.Email, "Feedback request.", bodyString) {
-			c.String(http.StatusBadRequest, "An error has ocurred sending the email")
-			return
-		}
+		go services.SendEmail(user.Email, "Feedback request.", bodyString)
 
 		c.String(http.StatusCreated, "Success")
 	} else {

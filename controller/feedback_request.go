@@ -58,10 +58,11 @@ func RequestFeedback(c *gin.Context) {
 	// If 15 days has passed, the user can request another feedback.
 	// Also if it is the first request between this 2 users, request its allow, that's
 	//why we check for the seconds. If the diff is 0, it means there is no previous request.
-	_, found := db.GetFeedBackRequestedID(id, IDUser)
+	reqID, found := db.GetFeedBackRequestedID(id, IDUser)
+	reqObj, _, _ := db.GetSelectedFeedBackRequestObj(reqID)
 
 	if found {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "You already have a request pending from this user."})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "You already have a request pending from this user", "timeleft": reqObj.TimeLeft})
 		return
 	}
 

@@ -22,7 +22,7 @@ func WatchTimeLeft() {
 			"$match", bson.D{
 				{"operationType", "update"},
 				{"updateDescription.updatedFields.timeleft", bson.D{
-					{"$in", bson.A{1, 5, 10}},
+					{"$in", bson.A{0, 1, 5, 10}},
 				}},
 			},
 		},
@@ -43,20 +43,24 @@ func WatchTimeLeft() {
 		if err != nil {
 			return
 		}
-		email, err := GetUserMailById(data.FullDocument.RequestedUserID)
-		if err != nil {
-			return
+		if data.UpdateDescription.UpdatedFields.Timeleft == 0 {
+			DeleteFeedbackRequested(data.FullDocument.FeedbackRequestID)
+		} else {
+			email, err := GetUserMailById(data.FullDocument.RequestedUserID)
+			if err != nil {
+				return
+			}
+
+			//TODO: Set scheduler for 6 am (if possible) done
+			// send link attached in mail body* Done
+			bodyString := "Hey!\nYou have " + fmt.Sprint(data.UpdateDescription.UpdatedFields.Timeleft) + " days left to make your feedback,\nHurry up!\n" +
+				"Follow this link: http:localhost:8080/target_id=" + data.FullDocument.LoggedUserId
+
+			time.AfterFunc(6*time.Hour, func() {
+				services.SendEmail(email, "You have a pending feedback request.", bodyString)
+				log.Println("Email sent by watch routine")
+			})
 		}
-
-		//TODO: Set scheduler for 6 am (if possible) done
-		// send link attached in mail body* Done
-		bodyString := "Hey!\nYou have " + fmt.Sprint(data.UpdateDescription.UpdatedFields.Timeleft) + " days left to make your feedback,\nHurry up!\n" +
-			"Follow this link: http:localhost:8080/?target_id=" + data.FullDocument.LoggedUserId
-
-		time.AfterFunc(6*time.Hour, func() {
-			services.SendEmail(email, "You have a pending feedback request.", bodyString)
-			log.Println("Email sent by watch routine")
-		})
 	}
 
 }

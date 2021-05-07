@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -33,21 +34,21 @@ func FeedbackTry(c *gin.Context) {
 		c.String(http.StatusBadRequest, "ID Error")
 		return
 	}
+
 	loggedUser, _ := db.GetUser(IDUser)
 	if !loggedUser.Enabled {
 		c.String(http.StatusUnauthorized, "User not authorized.")
 		return
 	}
-	user, err := db.GetUser(rID)
+	validUser, err := db.GetUser(rID)
 	if err != nil {
 		c.String(http.StatusBadRequest, "Error returning user")
 	}
-	_, isFound, _ := db.UserAlreadyExist(user.Email)
+	_, isFound, _ := db.UserAlreadyExist(validUser.Email)
 	if !isFound {
 		c.String(http.StatusBadRequest, "User was not found.")
 		return
 	}
-	validUser, _ := db.GetUser(rID)
 	if !validUser.Enabled {
 		c.String(http.StatusUnauthorized, "User not authorized to receive feedbacks.")
 		return
@@ -74,13 +75,13 @@ func FeedbackTry(c *gin.Context) {
 	}
 
 	// graphic stats
-	user.Graphic, err = services.InitGraphic(fb, user)
+	validUser.Graphic, err = services.InitGraphic(fb, validUser)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 	// persist graphic.
-	_, err = db.UpdateGraphic(user, rID)
+	_, err = db.UpdateGraphic(validUser, rID)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
@@ -97,8 +98,12 @@ func FeedbackTry(c *gin.Context) {
 
 	// Send email notification
 
-	msg := "Hi " + user.Name + " " + user.LastName + "! \n You have received a new feedback, check it in your dashboard! <a>http:localhost:8080/dashboard</a> \n\n"
-	go services.SendEmail(user.Email, "New Feedback Received!", msg)
+	msg := "Hi " + validUser.Name + " " + validUser.LastName + "! \n You have received a new feedback, check it in your dashboard! <a>http:localhost:8080/dashboard</a> \n\n"
+	go func() {
+		if !services.SendEmail(validUser.Email, "New Feedback Received!", msg) {
+			log.Println("email could not be sent")
+		}
+	}()
 
 	//------------------------------
 

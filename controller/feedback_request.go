@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -121,7 +122,11 @@ func RequestFeedback(c *gin.Context) {
 			"</i></b>\n<br> Thanks for your time!\n\n<br><b> Feedback-Api</b> \n <br><i>feedbackapiadm@gmail.com</i>\n<br> " + time.Now().Format(timeFormat)
 
 		//Email send function
-		go services.SendEmail(user.Email, "Feedback request.", bodyString)
+		go func() {
+			if !services.SendEmail(user.Email, "Feedback request.", bodyString) {
+				log.Println("email could not be sent")
+			}
+		}()
 
 		c.String(http.StatusCreated, "Success")
 	} else {

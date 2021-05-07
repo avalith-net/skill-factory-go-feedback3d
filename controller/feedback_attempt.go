@@ -99,7 +99,7 @@ func FeedbackTry(c *gin.Context) {
 	// Send email notification
 
 	msg := "Hi " + user.Name + " " + user.LastName + "! \n You have received a new feedback, check it in your dashboard! <a>http:localhost:8080/dashboard</a> \n\n"
-	go services.SendEmail(user.Email, "New Feedback Received!", msg)
+	services.SendEmail(user.Email, "New Feedback Received!", msg)
 
 	//------------------------------
 

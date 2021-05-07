@@ -54,7 +54,7 @@ func WatchTimeLeft() {
 			//TODO: Set scheduler for 6 am (if possible) done
 			// send link attached in mail body* Done
 			bodyString := "Hey!\nYou have " + fmt.Sprint(data.UpdateDescription.UpdatedFields.Timeleft) + " days left to make your feedback,\nHurry up!\n" +
-				"Follow this link: http:localhost:8080/target_id=" + data.FullDocument.LoggedUserId
+				"Follow this link: http:localhost:8080/feedback?target_id=" + data.FullDocument.LoggedUserId
 
 			time.AfterFunc(6*time.Hour, func() {
 				services.SendEmail(email, "You have a pending feedback request.", bodyString)

@@ -9,8 +9,16 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type usersService interface {
+	GetUserMailById(string) (string, error)
+}
+
+type usersServiceStruct struct{}
+
+var UserService usersService = &usersServiceStruct{}
+
 //GetUser .
-func GetUserMailById(ID string) (string, error) {
+func (users *usersServiceStruct) GetUserMailById(ID string) (string, error) {
 
 	ctx, cancel := context.WithTimeout(context.TODO(), 15*time.Second)
 	defer cancel()

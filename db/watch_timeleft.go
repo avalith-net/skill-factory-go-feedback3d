@@ -46,7 +46,7 @@ func WatchTimeLeft() {
 		if data.UpdateDescription.UpdatedFields.Timeleft == 0 {
 			DeleteFeedbackRequested(data.FullDocument.FeedbackRequestID)
 		} else {
-			email, err := GetUserMailById(data.FullDocument.RequestedUserID)
+			email, err := UserService.GetUserMailById(data.FullDocument.RequestedUserID)
 			if err != nil {
 				return
 			}
